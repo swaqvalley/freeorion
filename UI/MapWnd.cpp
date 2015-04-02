@@ -675,7 +675,7 @@ public:
                     fixed_distances.insert(fleet->Speed());
                 for (int ship_id : fleet->ShipIDs()) {
                     if (auto ship = GetShip(ship_id)) {
-                        const float ship_range = ship->InitialMeterValue(METER_DETECTION);
+                        const float ship_range = ship->Detection();
                         if (ship_range > 20)
                             fixed_distances.insert(ship_range);
                         const float ship_speed = ship->Speed();

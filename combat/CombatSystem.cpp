@@ -302,29 +302,20 @@ namespace {
 
         auto& damaged_object_ids = combat_info.damaged_object_ids;
 
-        Meter* target_structure = target->UniverseObject::GetMeter(METER_STRUCTURE);
-        if (!target_structure) {
-            ErrorLogger() << "couldn't get target structure or shield meter";
-            return;
-        }
-
-        Meter* target_shield = target->UniverseObject::GetMeter(METER_SHIELD);
-        float shield = (target_shield ? target_shield->Current() : 0.0f);
-
         DebugLogger() << "AttackShipShip: attacker: " << attacker->Name()
                       << "weapon: " << weapon.part_type_name << " power: " << power
-                      << "  target: " << target->Name() << " shield: " << target_shield->Current()
-                      << " structure: " << target_structure->Current();
+                      << "  target: " << target->Name() << " shield: " << target->Shield()
+                      << " structure: " << target->Structure();
 
-        float damage = std::max(0.0f, power - shield);
+        float damage = std::max(0.0f, power - target->Shield());
 
         if (damage > 0.0f) {
-            target_structure->AddToCurrent(-damage);
+            target->GetMeter(METER_STRUCTURE)->AddToCurrent(-damage);
             damaged_object_ids.insert(target->ID());
             DebugLogger(combat) << "COMBAT: Ship " << attacker->Name() << " (" << attacker->ID() << ") does " << damage << " damage to Ship " << target->Name() << " (" << target->ID() << ")";
         }
 
-        combat_event->AddEvent(round, target->ID(), target->Owner(), weapon.part_type_name, power, shield, damage);
+        combat_event->AddEvent(round, target->ID(), target->Owner(), weapon.part_type_name, power, target->Shield(), damage);
 
         attacker->SetLastTurnActiveInCombat(CurrentTurn());
         target->SetLastTurnActiveInCombat(CurrentTurn());
@@ -440,23 +431,14 @@ namespace {
 
         std::set<int>& damaged_object_ids = combat_info.damaged_object_ids;
 
-        Meter* target_structure = target->UniverseObject::GetMeter(METER_STRUCTURE);
-        if (!target_structure) {
-            ErrorLogger() << "couldn't get target structure or shield meter";
-            return;
-        }
-
-        Meter* target_shield = target->UniverseObject::GetMeter(METER_SHIELD);
-        float shield = (target_shield ? target_shield->Current() : 0.0f);
-
         DebugLogger(combat) << "AttackPlanetShip: attacker: " << attacker->Name() << " power: " << power
-                            << "  target: " << target->Name() << " shield: " << target_shield->Current()
-                            << " structure: " << target_structure->Current();
+                            << "  target: " << target->Name() << " shield: " << target->Shield()
+                            << " structure: " << target->Structure();
 
-        float damage = std::max(0.0f, power - shield);
+        float damage = std::max(0.0f, power - target->Shield());
 
         if (damage > 0.0f) {
-            target_structure->AddToCurrent(-damage);
+            target->GetMeter(METER_STRUCTURE)->AddToCurrent(-damage);
             damaged_object_ids.insert(target->ID());
             DebugLogger(combat) << "COMBAT: Planet " << attacker->Name() << " (" << attacker->ID()
                                 << ") does " << damage << " damage to Ship " << target->Name() << " ("
@@ -464,7 +446,7 @@ namespace {
         }
 
         combat_event->AddEvent(round, target->ID(), target->Owner(), weapon.part_type_name,
-                               power, shield, damage);
+                               power, target->Shield(), damage);
 
         target->SetLastTurnActiveInCombat(CurrentTurn());
     }
@@ -500,23 +482,16 @@ namespace {
 
         std::set<int>& damaged_object_ids = combat_info.damaged_object_ids;
 
-        Meter* target_structure = target->UniverseObject::GetMeter(METER_STRUCTURE);
-        if (!target_structure) {
-            ErrorLogger() << "couldn't get target structure or shield meter";
-            return;
-        }
-
-        //Meter* target_shield = target->UniverseObject::GetMeter(METER_SHIELD);
-        float shield = 0.0f; //(target_shield ? target_shield->Current() : 0.0f);
+        float shield = 0.0f; //target->Shield();
 
         DebugLogger() << "AttackFighterShip: Fighter of empire " << attacker->Owner() << " power: " << power
-                      << "  target: " << target->Name() //<< " shield: " << target_shield->Current()
-                      << " structure: " << target_structure->Current();
+                      << "  target: " << target->Name() //<< " shield: " << target->Shield()
+                      << " structure: " << target->Structure();
 
         float damage = std::max(0.0f, power - shield);
 
         if (damage > 0.0f) {
-            target_structure->AddToCurrent(-damage);
+            target->GetMeter(METER_STRUCTURE)->AddToCurrent(-damage);
             damaged_object_ids.insert(target->ID());
             DebugLogger(combat) << "COMBAT: Fighter of empire " << attacker->Owner() << " (" << attacker->ID()
                                 << ") does " << damage << " damage to Ship " << target->Name() << " ("
@@ -924,9 +899,8 @@ namespace {
             int target_id = target->ID();
             // check for destruction of target object
 
-            if (target->ObjectType() == OBJ_FIGHTER) {
-                auto fighter = std::dynamic_pointer_cast<const Fighter>(target);
-                if (fighter && fighter->Destroyed()) {
+            if (const std::shared_ptr<const Fighter> fighter = std::dynamic_pointer_cast<const Fighter>(target)) {
+                if (fighter->Destroyed()) {
                     // remove destroyed fighter's ID from lists of valid attackers and targets
                     valid_attacker_object_ids.erase(target_id);
                     valid_target_object_ids.erase(target_id);   // probably not necessary as this set isn't used in this loop
@@ -941,8 +915,8 @@ namespace {
                     return fighter->Destroyed();
                 }
 
-            } else if (target->ObjectType() == OBJ_SHIP) {
-                if (target->CurrentMeterValue(METER_STRUCTURE) <= 0.0f) {
+            } else if (const std::shared_ptr<const Ship> ship = std::dynamic_pointer_cast<const Ship>(target)) {
+                if (ship->Structure() <= 0.0) {
                     DebugLogger(combat) << "!! Target Ship " << target_id << " is destroyed!";
                     // object id destroyed
                     combat_info.destroyed_object_ids.insert(target_id);

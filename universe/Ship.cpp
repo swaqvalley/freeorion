@@ -280,8 +280,29 @@ bool Ship::CanBombard() const {
     return design && design->CanBombard();
 }
 
+float Ship::Detection() const
+{ return CurrentMeterValue(METER_DETECTION); }
+
+float Ship::Fuel() const
+{ return CurrentMeterValue(METER_FUEL); }
+
+float Ship::MaxFuel() const
+{ return CurrentMeterValue(METER_MAX_FUEL); }
+
+float Ship::Shield() const
+{ return CurrentMeterValue(METER_SHIELD); }
+
+float Ship::MaxShield() const
+{ return CurrentMeterValue(METER_MAX_SHIELD); }
+
 float Ship::Speed() const
 { return InitialMeterValue(METER_SPEED); }
+
+float Ship::Structure() const
+{ return CurrentMeterValue(METER_STRUCTURE); }
+
+float Ship::MaxStructure() const
+{ return CurrentMeterValue(METER_MAX_STRUCTURE); }
 
 float Ship::ColonyCapacity() const {
     float retval = 0.0f;
@@ -563,14 +584,8 @@ void Ship::BackPropagateMeters() {
 void Ship::Resupply() {
     m_last_resupplied_on_turn = CurrentTurn();
 
-    Meter* fuel_meter = UniverseObject::GetMeter(METER_FUEL);
-    const Meter* max_fuel_meter = UniverseObject::GetMeter(METER_MAX_FUEL);
-    if (!fuel_meter || !max_fuel_meter) {
-        ErrorLogger() << "Ship::Resupply couldn't get fuel meters!";
-    } else {
-        fuel_meter->SetCurrent(max_fuel_meter->Current());
-        fuel_meter->BackPropagate();
-    }
+    GetMeter(METER_FUEL)->SetCurrent(MaxFuel());
+    GetMeter(METER_FUEL)->BackPropagate();
 
     // set all part capacities equal to any associated max capacity
     // this "upgrades" any direct-fire weapon parts to their latest-allowed
@@ -700,11 +715,11 @@ void Ship::ClampMeters() {
     UniverseObject::ClampMeters();
 
     UniverseObject::GetMeter(METER_MAX_FUEL)->ClampCurrentToRange();
-    UniverseObject::GetMeter(METER_FUEL)->ClampCurrentToRange(Meter::DEFAULT_VALUE, UniverseObject::GetMeter(METER_MAX_FUEL)->Current());
+    UniverseObject::GetMeter(METER_FUEL)->ClampCurrentToRange(Meter::DEFAULT_VALUE, MaxFuel());
     UniverseObject::GetMeter(METER_MAX_SHIELD)->ClampCurrentToRange();
-    UniverseObject::GetMeter(METER_SHIELD)->ClampCurrentToRange(Meter::DEFAULT_VALUE, UniverseObject::GetMeter(METER_MAX_SHIELD)->Current());
+    UniverseObject::GetMeter(METER_SHIELD)->ClampCurrentToRange(Meter::DEFAULT_VALUE, MaxShield());
     UniverseObject::GetMeter(METER_MAX_STRUCTURE)->ClampCurrentToRange();
-    UniverseObject::GetMeter(METER_STRUCTURE)->ClampCurrentToRange(Meter::DEFAULT_VALUE, UniverseObject::GetMeter(METER_MAX_STRUCTURE)->Current());
+    UniverseObject::GetMeter(METER_STRUCTURE)->ClampCurrentToRange(Meter::DEFAULT_VALUE, MaxStructure());
     UniverseObject::GetMeter(METER_TARGET_INDUSTRY)->ClampCurrentToRange();
     UniverseObject::GetMeter(METER_INDUSTRY)->ClampCurrentToRange();
     UniverseObject::GetMeter(METER_TARGET_RESEARCH)->ClampCurrentToRange();

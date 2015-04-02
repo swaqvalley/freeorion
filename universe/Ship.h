@@ -61,7 +61,14 @@ public:
     bool                        CanHaveTroops() const;
     bool                        CanBombard() const;
     const std::string&          SpeciesName() const         { return m_species_name; }
+    float                       Detection() const;
+    float                       Fuel() const;
+    float                       MaxFuel() const;
+    float                       Shield() const;
+    float                       MaxShield() const;
     float                       Speed() const;
+    float                       Structure() const;
+    float                       MaxStructure() const;
     float                       ColonyCapacity() const;
     float                       TroopCapacity() const;
 

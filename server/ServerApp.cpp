@@ -1848,8 +1848,8 @@ namespace {
             auto ship = GetShip(ship_id);
             if (!ship || !ship->Unowned())  // only want unowned / monster ships
                 continue;
-            if (ship->InitialMeterValue(METER_DETECTION) > monster_detection_strength_here)
-                monster_detection_strength_here = ship->InitialMeterValue(METER_DETECTION);
+            if (ship->Detection() > monster_detection_strength_here)
+                monster_detection_strength_here = ship->Detection();
         }
 
         // test each ship in each fleet for visibility by best monster detection here
@@ -1915,8 +1915,8 @@ namespace {
         for (auto& ship : Objects().FindObjects<const Ship>(system->ShipIDs())) {
             if (!ship->Unowned())  // only want unowned / monster ships
                 continue;
-            if (ship->InitialMeterValue(METER_DETECTION) > monster_detection_strength_here)
-                monster_detection_strength_here = ship->InitialMeterValue(METER_DETECTION);
+            if (ship->Detection() > monster_detection_strength_here)
+                monster_detection_strength_here = ship->Detection();
         }
 
         // test each planet for visibility by best monster detection here

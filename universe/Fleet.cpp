@@ -579,13 +579,8 @@ float Fleet::Fuel() const {
     bool is_fleet_scrapped = true;
 
     for (auto& ship : Objects().FindObjects<const Ship>(m_ships)) {
-        const Meter* meter = ship->UniverseObject::GetMeter(METER_FUEL);
-        if (!meter) {
-            ErrorLogger() << "Fleet::Fuel skipping ship with no fuel meter";
-            continue;
-        }
         if (!ship->OrderedScrapped()) {
-            fuel = std::min(fuel, meter->Current());
+            fuel = std::min(fuel, ship->Fuel());
             is_fleet_scrapped = false;
         } 
     }
@@ -605,13 +600,8 @@ float Fleet::MaxFuel() const {
     bool is_fleet_scrapped = true;
 
     for (auto& ship : Objects().FindObjects<const Ship>(m_ships)) {
-        const Meter* meter = ship->UniverseObject::GetMeter(METER_MAX_FUEL);
-        if (!meter) {
-            ErrorLogger() << "Fleet::MaxFuel skipping ship with no max fuel meter";
-            continue;
-        }
         if (!ship->OrderedScrapped()) {
-            max_fuel = std::min(max_fuel, meter->Current());
+            max_fuel = std::min(max_fuel, ship->MaxFuel());
             is_fleet_scrapped = false;
         }
     }
@@ -853,10 +843,8 @@ void Fleet::MovementPhase() {
             //    FinalDestinationID() == SystemID())
             //{
             //    for (auto& ship : ships) {
-            //        if (Meter* fuel_meter = ship->UniverseObject::GetMeter(METER_FUEL)) {
-            //            fuel_meter->AddToCurrent(0.1001f);  // .0001 to prevent rounding down
-            //            fuel_meter->BackPropagate();
-            //        }
+            //        ship->GetMeter(METER_FUEL)->AddToCurrent(0.1001f);  // .0001 to prevent rounding down
+            //        ship->GetMeter(METER_FUEL)->BackPropagate();
             //    }
             //}
             return;
@@ -1004,10 +992,8 @@ void Fleet::MovementPhase() {
     // consume fuel from ships in fleet
     if (fuel_consumed > 0.0f) {
         for (auto& ship : ships) {
-            if (Meter* meter = ship->UniverseObject::GetMeter(METER_FUEL)) {
-                meter->AddToCurrent(-fuel_consumed);
-                meter->BackPropagate();
-            }
+            ship->GetMeter(METER_FUEL)->AddToCurrent(-fuel_consumed);
+            ship->GetMeter(METER_FUEL)->BackPropagate();
         }
     }
 }
@@ -1215,7 +1201,7 @@ bool Fleet::BlockadedAtSystem(int start_system_id, int dest_system_id) const {
             continue;
 
         for (auto& ship : Objects().FindObjects<const Ship>(fleet->ShipIDs())) {
-            float cur_detection = ship->CurrentMeterValue(METER_DETECTION);
+            float cur_detection = ship->Detection();
             if (cur_detection >= monster_detection)
                 monster_detection = cur_detection;
         }
@@ -1323,7 +1309,7 @@ float Fleet::Structure() const {
     for (int ship_id : m_ships) {
         if (auto ship = GetShip(ship_id)) {
             if (!ship->OrderedScrapped()) {
-                retval += ship->CurrentMeterValue(METER_STRUCTURE);
+                retval += ship->Structure();
                 fleet_is_scrapped = false;
             }
         }
@@ -1344,7 +1330,7 @@ float Fleet::Shields() const {
     for (int ship_id : m_ships) {
         if (auto ship = GetShip(ship_id)) {
             if (!ship->OrderedScrapped()) {
-                retval += ship->CurrentMeterValue(METER_SHIELD);
+                retval += ship->Shield();
                 fleet_is_scrapped = false;
             }
         }

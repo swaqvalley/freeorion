@@ -1,5 +1,6 @@
 #include "CombatLogManager.h"
 #include "../universe/Meter.h"
+#include "../universe/Ship.h"
 #include "../universe/UniverseObject.h"
 #include "../universe/Enums.h"
 #include "../util/Serialize.h"
@@ -11,9 +12,8 @@
 
 namespace {
     static float MaxHealth(const UniverseObject& object) {
-        if (object.ObjectType() == OBJ_SHIP) {
-            return object.CurrentMeterValue(METER_MAX_STRUCTURE);
-
+        if (auto ship = dynamic_cast<const Ship*>(&object)) {
+            return ship->MaxStructure();
         } else if ( object.ObjectType() == OBJ_PLANET ) {
             const Meter* defense = object.GetMeter(METER_MAX_DEFENSE);
             const Meter* shield = object.GetMeter(METER_MAX_SHIELD);
@@ -33,9 +33,8 @@ namespace {
     }
 
     static float CurrentHealth(const UniverseObject& object) {
-        if (object.ObjectType() == OBJ_SHIP) {
-            return object.CurrentMeterValue(METER_STRUCTURE);
-
+        if (const Ship* ship = dynamic_cast<const Ship*>(&object)) {
+            return ship->Structure();
         } else if (object.ObjectType() == OBJ_PLANET) {
             const Meter* defense = object.GetMeter(METER_DEFENSE);
             const Meter* shield = object.GetMeter(METER_SHIELD);
