@@ -614,7 +614,7 @@ void InvadeOrder::ExecuteImpl() const {
         ErrorLogger() << "InvadeOrder::ExecuteImpl given unpopulated planet";
         return;
     }
-    if (planet->InitialMeterValue(METER_SHIELD) > 0.0) {
+    if (planet->Shield() > 0.0) {
         ErrorLogger() << "InvadeOrder::ExecuteImpl given planet with shield > 0";
         return;
     }

@@ -1,5 +1,6 @@
 #include "CombatLogManager.h"
 #include "../universe/Meter.h"
+#include "../universe/Planet.h"
 #include "../universe/Ship.h"
 #include "../universe/UniverseObject.h"
 #include "../universe/Enums.h"
@@ -14,17 +15,14 @@ namespace {
     static float MaxHealth(const UniverseObject& object) {
         if (auto ship = dynamic_cast<const Ship*>(&object)) {
             return ship->MaxStructure();
-        } else if ( object.ObjectType() == OBJ_PLANET ) {
-            const Meter* defense = object.GetMeter(METER_MAX_DEFENSE);
-            const Meter* shield = object.GetMeter(METER_MAX_SHIELD);
+        } else if (const Planet* planet = dynamic_cast<const Planet*>(&object)) {
             const Meter* construction = object.UniverseObject::GetMeter(METER_TARGET_CONSTRUCTION);
 
             float ret = 0.0f;
-            if (defense)
-                ret += defense->Current();
-            if (shield)
-                ret += shield->Current();
-            if (construction)
+
+            ret += planet->MaxDefense();
+            ret += planet->MaxShield();
+            if(construction)
                 ret += construction->Current();
             return ret;
         }
@@ -35,17 +33,14 @@ namespace {
     static float CurrentHealth(const UniverseObject& object) {
         if (const Ship* ship = dynamic_cast<const Ship*>(&object)) {
             return ship->Structure();
-        } else if (object.ObjectType() == OBJ_PLANET) {
-            const Meter* defense = object.GetMeter(METER_DEFENSE);
-            const Meter* shield = object.GetMeter(METER_SHIELD);
+        } else if (const Planet* planet = dynamic_cast<const Planet*>(&object)) {
             const Meter* construction = object.UniverseObject::GetMeter(METER_CONSTRUCTION);
 
             float ret = 0.0f;
-            if (defense)
-                ret += defense->Current();
-            if (shield)
-                ret += shield->Current();
-            if (construction)
+
+            ret += planet->Defense();
+            ret += planet->Shield();
+            if(construction)
                 ret += construction->Current();
             return ret;
         }

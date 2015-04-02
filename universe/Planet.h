@@ -64,7 +64,18 @@ public:
     /** @returns an angle in degree. */
     float AxialTilt() const;
 
-    const std::set<int>& BuildingIDs() const    { return m_buildings; }
+    float                       Defense() const;
+    float                       MaxDefense() const;
+    float                       Detection() const;
+    float                       Shield() const;
+    float                       MaxShield() const;
+    float                       RebelTroops() const;
+    float                       Supply() const;
+    float                       MaxSupply() const;
+    float                       Troops() const;
+    float                       MaxTroops() const;
+
+    const std::set<int>&        BuildingIDs() const { return m_buildings; }
 
     bool IsAboutToBeColonized() const           { return m_is_about_to_be_colonized; }
     bool IsAboutToBeInvaded() const             { return m_is_about_to_be_invaded; }

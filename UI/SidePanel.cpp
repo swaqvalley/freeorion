@@ -1593,10 +1593,10 @@ void SidePanel::PlanetPanel::Refresh() {
     bool populated =        planet->InitialMeterValue(METER_POPULATION) > 0.0f;
     bool habitable =        planet_env_for_colony_species >= PE_HOSTILE && planet_env_for_colony_species <= PE_GOOD;
     bool visible =          GetUniverse().GetObjectVisibilityByEmpire(m_planet_id, client_empire_id) >= VIS_PARTIAL_VISIBILITY;
-    bool shielded =         planet->InitialMeterValue(METER_SHIELD) > 0.0f;
-    bool has_defenses =     planet->InitialMeterValue(METER_MAX_SHIELD) > 0.0f ||
-                            planet->InitialMeterValue(METER_MAX_DEFENSE) > 0.0f ||
-                            planet->InitialMeterValue(METER_MAX_TROOPS) > 0.0f;
+    bool shielded =         planet->Shield() > 0.0;
+    bool has_defenses =     planet->MaxShield() > 0.0 ||
+                            planet->MaxDefense() > 0.0 ||
+                            planet->MaxTroops() > 0.0;
     bool being_colonized =  planet->IsAboutToBeColonized();
     bool outpostable =                   !populated && (  !has_owner /*&& !shielded*/         ) && visible && !being_colonized;
     bool colonizable =      habitable && !populated && ( (!has_owner /*&& !shielded*/) || mine) && visible && !being_colonized;

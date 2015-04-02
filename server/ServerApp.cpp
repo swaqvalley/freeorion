@@ -2611,13 +2611,13 @@ namespace {
                 ErrorLogger() << "HandleInvasion couldn't get planet";
                 continue;
             }
-            if (planet->InitialMeterValue(METER_TROOPS) > 0.0f) {
+            if (planet->Troops() > 0.0) {
                 // empires may have garrisons on planets
-                planet_empire_troops[planet->ID()][planet->Owner()] += planet->InitialMeterValue(METER_TROOPS) + 0.0001;    // small bonus to ensure ties are won by initial owner
+                planet_empire_troops[planet->ID()][planet->Owner()] += planet->Troops() + 0.0001;    // small bonus to ensure ties are won by initial owner
             }
-            if (!planet->Unowned() && planet->InitialMeterValue(METER_REBEL_TROOPS) > 0.0f) {
+            if (!planet->Unowned() && planet->RebelTroops() > 0.0) {
                 // rebels may be present on empire-owned planets
-                planet_empire_troops[planet->ID()][ALL_EMPIRES] += planet->InitialMeterValue(METER_REBEL_TROOPS);
+                planet_empire_troops[planet->ID()][ALL_EMPIRES] += planet->RebelTroops();
             }
         }
 
@@ -2703,15 +2703,12 @@ namespace {
 
                 // regardless of whether battle resulted in conquering, it did
                 // likely affect the troop numbers on the planet
-                if (Meter* meter = planet->GetMeter(METER_TROOPS))
-                    meter->SetCurrent(empires_troops.begin()->second);  // new troops on planet is remainder after battle
+                planet->GetMeter(METER_TROOPS)->SetCurrent(empires_troops.begin()->second);  // new troops on planet is remainder after battle
 
             } else {
                 // no troops left?
-                if (Meter* meter = planet->GetMeter(METER_TROOPS))
-                    meter->SetCurrent(0.0);
-                if (Meter* meter = planet->GetMeter(METER_REBEL_TROOPS))
-                    meter->SetCurrent(0.0);
+                planet->GetMeter(METER_TROOPS)->SetCurrent(0.0);
+                planet->GetMeter(METER_REBEL_TROOPS)->SetCurrent(0.0);
             }
 
             planet->BackPropagateMeters();

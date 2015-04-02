@@ -527,8 +527,8 @@ namespace AIInterface {
         bool unowned = planet->Unowned();
         bool populated = planet->InitialMeterValue(METER_POPULATION) > 0.0f;
         bool visible = GetUniverse().GetObjectVisibilityByEmpire(planet_id, empire_id) >= VIS_PARTIAL_VISIBILITY;
-        bool vulnerable = planet->InitialMeterValue(METER_SHIELD) <= 0.0f;
-        float shields = planet->InitialMeterValue(METER_SHIELD);
+        bool vulnerable = planet->Shield() <= 0.0f;
+        float shields = planet->Shield();
         std::string this_species = planet->SpeciesName();
         //bool being_invaded = planet->IsAboutToBeInvaded();
         bool invadable = !owned_by_invader && vulnerable && (populated || !unowned) && visible ;// && !being_invaded; a 'being_invaded' check prevents AI from invading with multiple ships at once, which is important

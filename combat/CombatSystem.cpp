@@ -337,50 +337,39 @@ namespace {
         if (!attacker_design)
             return;
 
-        Meter* target_shield = target->GetMeter(METER_SHIELD);
-        Meter* target_defense = target->UniverseObject::GetMeter(METER_DEFENSE);
         Meter* target_construction = target->UniverseObject::GetMeter(METER_CONSTRUCTION);
-        if (!target_shield) {
-            ErrorLogger() << "couldn't get target shield meter";
-            return;
-        }
-        if (!target_defense) {
-            ErrorLogger() << "couldn't get target defense meter";
-            return;
-        }
         if (!target_construction) {
             ErrorLogger() << "couldn't get target construction meter";
             return;
         }
 
         DebugLogger(combat) << "AttackShipPlanet: attacker: " << attacker->Name() << " power: " << power
-                            << "\ntarget: " << target->Name() << " shield: " << target_shield->Current()
-                            << " defense: " << target_defense->Current() << " infra: " << target_construction->Current();
+                          << "\ntarget: " << target->Name() << " shield: " << target->Shield()
+                          << " defense: " << target->Defense() << " infra: " << target_construction->Current();
 
         // damage shields, limited by shield current value and damage amount.
         // remaining damage, if any, above shield current value goes to defense.
         // remaining damage, if any, above defense current value goes to construction
-        float shield_damage = std::min(target_shield->Current(), power);
+        float shield_damage = std::min(target->Shield(), power);
         float defense_damage = 0.0f;
         float construction_damage = 0.0f;
-        if (shield_damage >= target_shield->Current())
-            defense_damage = std::min(target_defense->Current(), power - shield_damage);
+        if (shield_damage >= target->Shield())
+            defense_damage = std::min(target->Defense(), power - shield_damage);
 
         if (power > 0)
             damaged_object_ids.insert(target->ID());
 
-        if (defense_damage >= target_defense->Current())
+        if (defense_damage >= target->Defense())
             construction_damage = std::min(target_construction->Current(),
                                            power - shield_damage - defense_damage);
 
         if (shield_damage >= 0) {
-            target_shield->AddToCurrent(-shield_damage);
+            target->GetMeter(METER_SHIELD)->AddToCurrent(-shield_damage);
             DebugLogger(combat) << "COMBAT: Ship " << attacker->Name() << " (" << attacker->ID() << ") does "
                                 << shield_damage << " shield damage to Planet " << target->Name() << " ("
                                 << target->ID() << ")";
-        }
         if (defense_damage >= 0) {
-            target_defense->AddToCurrent(-defense_damage);
+            target->GetMeter(METER_DEFENSE)->AddToCurrent(-defense_damage);
             DebugLogger(combat) << "COMBAT: Ship " << attacker->Name() << " (" << attacker->ID() << ") does "
                                 << defense_damage << " defense damage to Planet " << target->Name() << " ("
                                 << target->ID() << ")";
@@ -424,10 +413,7 @@ namespace {
     {
         if (!attacker || !target) return;
 
-        float power = 0.0f;
-        const Meter* attacker_damage = attacker->UniverseObject::GetMeter(METER_DEFENSE);
-        if (attacker_damage)
-            power = attacker_damage->Current();   // planet "Defense" meter is actually its attack power
+        float power = attacker->Defense(); // planet "Defense" meter is actually its attack power
 
         std::set<int>& damaged_object_ids = combat_info.damaged_object_ids;
 
@@ -458,10 +444,7 @@ namespace {
     {
         if (!attacker || !target) return;
 
-        float power = 0.0f;
-        const Meter* attacker_damage = attacker->UniverseObject::GetMeter(METER_DEFENSE);
-        if (attacker_damage)
-            power = attacker_damage->Current();   // planet "Defense" meter is actually its attack power
+        float power = attacker->Defense();   // planet "Defense" meter is actually its attack power
 
         if (power > 0.0f) {
             // any damage is enough to destroy any fighter
@@ -663,7 +646,7 @@ namespace {
         if (auto ship = std::dynamic_pointer_cast<const Ship>(obj)) {
             return ship->IsArmed() || ship->HasFighters();
         } else if (auto planet = std::dynamic_pointer_cast<const Planet>(obj)) {
-            return planet->InitialMeterValue(METER_DEFENSE) > 0.0f;
+            return planet->Defense() > 0.0;
         } else if (auto fighter = std::dynamic_pointer_cast<const Fighter>(obj)) {
             return fighter->Damage() > 0.0f;
         } else {
@@ -771,7 +754,7 @@ namespace {
         for (auto it = combat_info.objects.const_begin(); it != combat_info.objects.const_end(); ++it) {
             auto obj = *it;
             if (obj->Unowned() && (obj->ObjectType() == OBJ_SHIP || obj->ObjectType() == OBJ_PLANET )){
-                monster_detection = std::max(monster_detection, obj->InitialMeterValue(METER_DETECTION));
+                monster_detection = std::max(monster_detection, obj->Detection());
             }
         }
         return monster_detection;
@@ -943,6 +926,7 @@ namespace {
                 }
 
             } else if (target->ObjectType() == OBJ_PLANET) {
+                TemporaryPtr<const Planet> planet = boost::dynamic_pointer_cast<const Planet>(target);
                 if (!ObjectCanAttack(target) &&
                     valid_attacker_object_ids.count(target_id))
                 {
@@ -950,8 +934,8 @@ namespace {
                     // remove disabled planet's ID from lists of valid attackers
                     valid_attacker_object_ids.erase(target_id);
                 }
-                if (target->CurrentMeterValue(METER_SHIELD) <= 0.0f &&
-                    target->CurrentMeterValue(METER_DEFENSE) <= 0.0f &&
+                if (planet->Shield() <= 0.0 &&
+                    planet->Defense() <= 0.0 &&
                     target->CurrentMeterValue(METER_CONSTRUCTION) <= 0.0f)
                 {
                     // An outpost can enter combat in essentially an
@@ -1438,8 +1422,7 @@ namespace {
             }
 
         } else if (attack_planet) {     // treat planet defenses as direct fire weapon
-            weapons.push_back(PartAttackInfo(PC_DIRECT_WEAPON, UserStringNop("DEF_DEFENSE"),
-                                             attack_planet->CurrentMeterValue(METER_DEFENSE)));
+            weapons.push_back(PartAttackInfo(PC_DIRECT_WEAPON, UserStringNop("DEF_DEFENSE"), attack_planet->Defense()));
 
         } else if (attack_fighter) {    // treat fighter damage as direct fire weapon
             weapons.push_back(PartAttackInfo(PC_DIRECT_WEAPON, UserStringNop("FT_WEAPON_1"),

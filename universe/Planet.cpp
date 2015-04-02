@@ -412,6 +412,36 @@ float Planet::RotationalPeriod() const
 float Planet::AxialTilt() const
 { return m_axial_tilt; }
 
+float Planet::Defense() const
+{ return CurrentMeterValue(METER_DEFENSE); }
+
+float Planet::MaxDefense() const
+{ return CurrentMeterValue(METER_MAX_DEFENSE); }
+
+float Planet::Detection() const
+{ return CurrentMeterValue(METER_DETECTION); }
+
+float Planet::Shield() const
+{ return CurrentMeterValue(METER_SHIELD); }
+
+float Planet::MaxShield() const
+{ return CurrentMeterValue(METER_MAX_SHIELD); }
+
+float Planet::RebelTroops() const
+{ return CurrentMeterValue(METER_REBEL_TROOPS); }
+
+float Planet::Supply() const
+{ return CurrentMeterValue(METER_SUPPLY); }
+
+float Planet::MaxSupply() const
+{ return CurrentMeterValue(METER_MAX_SUPPLY); }
+
+float Planet::Troops() const
+{ return CurrentMeterValue(METER_TROOPS); }
+
+float Planet::MaxTroops() const
+{ return CurrentMeterValue(METER_MAX_TROOPS); }
+
 std::shared_ptr<UniverseObject> Planet::Accept(const UniverseObjectVisitor& visitor) const
 { return visitor.Visit(std::const_pointer_cast<Planet>(std::static_pointer_cast<const Planet>(UniverseObject::shared_from_this()))); }
 
@@ -852,15 +882,15 @@ void Planet::ClampMeters() {
     PopCenterClampMeters();
 
     UniverseObject::GetMeter(METER_MAX_SHIELD)->ClampCurrentToRange();
-    UniverseObject::GetMeter(METER_SHIELD)->ClampCurrentToRange(Meter::DEFAULT_VALUE, UniverseObject::GetMeter(METER_MAX_SHIELD)->Current());
+    UniverseObject::GetMeter(METER_SHIELD)->ClampCurrentToRange(Meter::DEFAULT_VALUE, MaxShield());
     UniverseObject::GetMeter(METER_MAX_DEFENSE)->ClampCurrentToRange();
-    UniverseObject::GetMeter(METER_DEFENSE)->ClampCurrentToRange(Meter::DEFAULT_VALUE, UniverseObject::GetMeter(METER_MAX_DEFENSE)->Current());
+    UniverseObject::GetMeter(METER_DEFENSE)->ClampCurrentToRange(Meter::DEFAULT_VALUE, MaxDefense());
     UniverseObject::GetMeter(METER_MAX_TROOPS)->ClampCurrentToRange();
-    UniverseObject::GetMeter(METER_TROOPS)->ClampCurrentToRange(Meter::DEFAULT_VALUE, UniverseObject::GetMeter(METER_MAX_TROOPS)->Current());
+    UniverseObject::GetMeter(METER_TROOPS)->ClampCurrentToRange(Meter::DEFAULT_VALUE, MaxTroops());
     UniverseObject::GetMeter(METER_MAX_SUPPLY)->ClampCurrentToRange();
-    UniverseObject::GetMeter(METER_SUPPLY)->ClampCurrentToRange(Meter::DEFAULT_VALUE, UniverseObject::GetMeter(METER_MAX_SUPPLY)->Current());
+    UniverseObject::GetMeter(METER_SUPPLY)->ClampCurrentToRange(Meter::DEFAULT_VALUE, MaxSupply());
     UniverseObject::GetMeter(METER_MAX_STOCKPILE)->ClampCurrentToRange();
-    UniverseObject::GetMeter(METER_STOCKPILE)->ClampCurrentToRange(Meter::DEFAULT_VALUE, UniverseObject::GetMeter(METER_MAX_STOCKPILE)->Current());
+    UniverseObject::GetMeter(METER_STOCKPILE)->ClampCurrentToRange(Meter::DEFAULT_VALUE, MaxStockpile());
 
     UniverseObject::GetMeter(METER_REBEL_TROOPS)->ClampCurrentToRange();
     UniverseObject::GetMeter(METER_DETECTION)->ClampCurrentToRange();

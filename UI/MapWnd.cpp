@@ -689,7 +689,7 @@ public:
         if (const auto system = GetSystem(sel_system_id)) {
             for (int planet_id : system->PlanetIDs()) {
                 if (const auto planet = GetPlanet(planet_id)) {
-                    const float planet_range = planet->InitialMeterValue(METER_DETECTION);
+                    const float planet_range = planet->Detection();
                     if (planet_range > 20)
                         fixed_distances.insert(planet_range);
                 }
