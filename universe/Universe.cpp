@@ -2024,7 +2024,7 @@ namespace {
             for (auto& field : objects.FindObjects<Field>()) {
                 if (field->GetMeter(METER_STEALTH)->Current() > detection_strength)
                     continue;
-                double field_size = field->GetMeter(METER_SIZE)->Current();
+                double field_size = field->Size();
                 const std::pair<double, double> object_pos(field->X(), field->Y());
 
                 // search through detector positions until one is found in range

@@ -32,6 +32,10 @@ public:
 
     void ClampMeters() override;
 
+    float Size() const;
+
+    float Speed() const;
+
     const std::string&          FieldTypeName() const { return m_type_name; }
 
     bool InField(std::shared_ptr<const UniverseObject> obj) const;

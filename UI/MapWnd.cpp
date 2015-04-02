@@ -3946,7 +3946,7 @@ void MapWnd::InitFieldRenderingBuffers() {
         auto field = GetField(field_icon.first);
         if (!field)
             continue;
-        const float FIELD_SIZE = field->InitialMeterValue(METER_SIZE);  // field size is its radius
+        const float FIELD_SIZE = field->Size();  // field size is its radius
         if (FIELD_SIZE <= 0)
             continue;
         auto field_texture = field_icon.second->FieldTexture();
@@ -4769,7 +4769,7 @@ void MapWnd::DoFieldIconsLayout() {
             continue;
         }
 
-        double RADIUS = ZoomFactor() * field->InitialMeterValue(METER_SIZE);    // Field's METER_SIZE gives the radius of the field
+        double RADIUS = ZoomFactor() * field->Size(); // Field's Size gives the radius of the field
 
         GG::Pt icon_ul(GG::X(static_cast<int>(field->X()*ZoomFactor() - RADIUS)),
                        GG::Y(static_cast<int>(field->Y()*ZoomFactor() - RADIUS)));

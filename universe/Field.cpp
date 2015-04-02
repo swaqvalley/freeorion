@@ -112,7 +112,13 @@ bool Field::HasTag(const std::string& name) const {
 UniverseObjectType Field::ObjectType() const
 { return OBJ_FIELD; }
 
-std::string Field::Dump(unsigned short ntabs) const {
+float Field::Size() const
+{ return CurrentMeterValue(METER_SIZE); }
+
+float Field::Speed() const
+{ return CurrentMeterValue(METER_SPEED); }
+
+std::string Field::Dump() const {
     std::stringstream os;
     os << UniverseObject::Dump(ntabs);
     os << " field type: " << m_type_name;
@@ -139,10 +145,7 @@ bool Field::InField(std::shared_ptr<const UniverseObject> obj) const
 { return obj && InField(obj->X(), obj->Y()); }
 
 bool Field::InField(double x, double y) const {
-    const Meter* size_meter = GetMeter(METER_SIZE);
-    double radius = 1.0;
-    if (size_meter)
-        radius = size_meter->Current();
+    double radius = Size();
 
     double dist2 = (x - this->X())*(x - this->X()) + (y - this->Y())*(y - this->Y());
     return dist2 < radius*radius;
