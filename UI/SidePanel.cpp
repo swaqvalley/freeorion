@@ -1840,7 +1840,7 @@ void SidePanel::PlanetPanel::Refresh() {
         Visibility visibility = GetUniverse().GetObjectVisibilityByEmpire(m_planet_id, client_empire_id);
         auto visibility_turn_map = GetUniverse().GetObjectVisibilityTurnMapByEmpire(m_planet_id, client_empire_id);
         float client_empire_detection_strength = client_empire->GetMeter("METER_DETECTION_STRENGTH")->Current();
-        float apparent_stealth = planet->InitialMeterValue(METER_STEALTH);
+        float apparent_stealth = planet->Stealth();
 
         std::string visibility_info;
         std::string detection_info;

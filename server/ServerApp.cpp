@@ -1867,7 +1867,7 @@ namespace {
                 if (!ship)
                     continue;
                 // if a ship is low enough stealth, its fleet can be seen by monsters
-                if (monster_detection_strength_here >= ship->InitialMeterValue(METER_STEALTH)) {
+                if (monster_detection_strength_here >= ship->Stealth()) {
                     visible_fleets.insert(fleet->ID());
                     break;  // fleet is seen, so don't need to check any more ships in it
                 }
@@ -1924,7 +1924,7 @@ namespace {
             if (planet->Unowned())
                 continue;       // only want empire-owned planets; unowned planets visible to monsters don't matter for combat conditions test
             // if a planet is low enough stealth, it can be seen by monsters
-            if (monster_detection_strength_here >= planet->InitialMeterValue(METER_STEALTH))
+            if (monster_detection_strength_here >= planet->Stealth())
                 visible_planets.insert(planet->ID());
         }
     }

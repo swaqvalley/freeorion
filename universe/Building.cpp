@@ -139,8 +139,7 @@ void Building::ResetTargetMaxUnpairedMeters() {
     UniverseObject::ResetTargetMaxUnpairedMeters();
 
     //// give buildings base stealth slightly above 0, so that they can't be seen from a distance without high detection ability
-    //if (Meter* stealth = GetMeter(METER_STEALTH))
-    //    stealth->AddToCurrent(0.01f);
+    //GetMeter(METER_STEALTH)->AddToCurrent(0.01f);
 }
 
 void Building::Reset() {

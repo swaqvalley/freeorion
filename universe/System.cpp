@@ -489,12 +489,7 @@ void System::SetLastTurnBattleHere(int turn)
 void System::ResetTargetMaxUnpairedMeters() {
     UniverseObject::ResetTargetMaxUnpairedMeters();
 
-    // give systems base stealth slightly above zero, so that they can't be
-    // seen from a distance without high detection ability
-    if (Meter* stealth = GetMeter(METER_STEALTH)) {
-        stealth->ResetCurrent();
-        //stealth->AddToCurrent(0.01f);
-    }
+    GetMeter(METER_STEALTH)->ResetCurrent();
 }
 
 bool System::OrbitOccupied(int orbit) const {

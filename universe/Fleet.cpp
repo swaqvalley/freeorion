@@ -1004,10 +1004,8 @@ void Fleet::ResetTargetMaxUnpairedMeters() {
     // give fleets base stealth very high, so that they can (almost?) never be
     // seen by empires that don't own them, unless their ships are seen and
     // that visibility is propagated to the fleet that contains the ships
-    if (Meter* stealth = GetMeter(METER_STEALTH)) {
-        stealth->ResetCurrent();
-        stealth->AddToCurrent(2000.0f);
-    }
+    GetMeter(METER_STEALTH)->ResetCurrent();
+    GetMeter(METER_STEALTH)->AddToCurrent(2000.0f);
 }
 
 void Fleet::CalculateRouteTo(int target_system_id) {
@@ -1190,8 +1188,8 @@ bool Fleet::BlockadedAtSystem(int start_system_id, int dest_system_id) const {
 
     float lowest_ship_stealth = 99999.9f; // arbitrary large number. actual stealth of ships should be less than this...
     for (auto& ship : Objects().FindObjects<const Ship>(this->ShipIDs())) {
-        if (lowest_ship_stealth > ship->CurrentMeterValue(METER_STEALTH))
-            lowest_ship_stealth = ship->CurrentMeterValue(METER_STEALTH);
+        if (lowest_ship_stealth > ship->Stealth())
+            lowest_ship_stealth = ship->Stealth();
     }
 
     float monster_detection = 0.0f;

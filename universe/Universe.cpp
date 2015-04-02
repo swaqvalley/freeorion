@@ -1922,10 +1922,7 @@ namespace {
         {
             auto obj = *object_it;
             int object_id = object_it->ID();
-            const Meter* stealth_meter = obj->GetMeter(METER_STEALTH);
-            if (!stealth_meter)
-                continue;
-            float object_stealth = stealth_meter->Current();
+            float object_stealth = obj->Stealth();
             std::pair<double, double> object_pos(obj->X(), obj->Y());
 
             // for each empire being checked for, check if each object could be
@@ -2022,7 +2019,7 @@ namespace {
 
             // for each field, try to find a detector position in range for this empire
             for (auto& field : objects.FindObjects<Field>()) {
-                if (field->GetMeter(METER_STEALTH)->Current() > detection_strength)
+                if (field->Stealth() > detection_strength)
                     continue;
                 double field_size = field->Size();
                 const std::pair<double, double> object_pos(field->X(), field->Y());

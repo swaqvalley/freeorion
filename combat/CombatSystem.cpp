@@ -612,8 +612,7 @@ namespace {
         if (obj_type == OBJ_PLANET || obj_type == OBJ_FIGHTER) {
             return true;
         } else if (obj_type == OBJ_SHIP) {
-            float stealth = obj->InitialMeterValue(METER_STEALTH);
-            if (monster_detection >= stealth)
+            if (monster_detection >= obj->Stealth())
                 return true;
         }
         //DebugLogger() << "... ... is NOT attackable by monsters";

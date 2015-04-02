@@ -125,6 +125,9 @@ double UniverseObject::Y() const
 int UniverseObject::CreationTurn() const
 { return m_created_on_turn; }
 
+float UniverseObject::Stealth() const
+{ return CurrentMeterValue(METER_STEALTH); }
+
 int UniverseObject::AgeInTurns() const {
     if (m_created_on_turn == BEFORE_FIRST_TURN)
         return SINCE_BEFORE_TIME_AGE;
@@ -376,8 +379,7 @@ std::map<MeterType, Meter> UniverseObject::CensoredMeters(Visibility vis) const 
 }
 
 void UniverseObject::ResetTargetMaxUnpairedMeters() {
-    if (Meter* meter = GetMeter(METER_STEALTH))
-        meter->ResetCurrent();
+    GetMeter(METER_STEALTH)->ResetCurrent();
 }
 
 void UniverseObject::ResetPairedActiveMeters() {

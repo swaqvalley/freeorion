@@ -2186,7 +2186,7 @@ namespace {
             % ship->MaxStructure()
             % ship->MaxShield()
             % ship->Detection()
-            % ship->CurrentMeterValue(METER_STEALTH)
+            % ship->Stealth()
             % ship->Speed()
             % ship->MaxFuel()
             % design->ColonyCapacity()
