@@ -33,7 +33,16 @@ public:
     virtual std::vector<std::string>AvailableFoci() const;                          ///< focus settings available to this ResourceCenter
     virtual const std::string&      FocusIcon(const std::string& focus_name) const; ///< icon representing focus with name \a focus_name for this ResourceCenter
 
-    std::string     Dump(unsigned short ntabs = 0) const;
+    float           Construction() const;
+    float           TargetConstruction() const;
+    float           Industry() const;
+    float           TargetIndustry() const;
+    float           Research() const;
+    float           TargetResearch() const;
+    float           Trade() const;
+    float           TargetTrade() const;
+
+    std::string     Dump() const;
 
     virtual float   InitialMeterValue(MeterType type) const = 0;            ///< implementation should return the initial value of the specified meter \a type
     virtual float   CurrentMeterValue(MeterType type) const = 0;            ///< implementation should return the current value of the specified meter \a type

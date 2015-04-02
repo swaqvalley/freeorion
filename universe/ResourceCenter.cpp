@@ -87,7 +87,31 @@ std::vector<std::string> ResourceCenter::AvailableFoci() const
 const std::string& ResourceCenter::FocusIcon(const std::string& focus_name) const
 { return EMPTY_STRING; }
 
-std::string ResourceCenter::Dump(unsigned short ntabs) const {
+float ResourceCenter::Construction() const
+{ return CurrentMeterValue(METER_CONSTRUCTION); }
+
+float ResourceCenter::TargetConstruction() const
+{ return CurrentMeterValue(METER_TARGET_CONSTRUCTION); }
+
+float ResourceCenter::Industry() const
+{ return CurrentMeterValue(METER_INDUSTRY); }
+
+float ResourceCenter::TargetIndustry() const
+{ return CurrentMeterValue(METER_TARGET_INDUSTRY); }
+
+float ResourceCenter::Research() const
+{ return CurrentMeterValue(METER_RESEARCH); }
+
+float ResourceCenter::TargetResearch() const
+{ return CurrentMeterValue(METER_TARGET_RESEARCH); }
+
+float ResourceCenter::Trade() const
+{ return CurrentMeterValue(METER_TRADE); }
+
+float ResourceCenter::TargetTrade() const
+{ return CurrentMeterValue(METER_TARGET_TRADE); }
+
+std::string ResourceCenter::Dump() const {
     std::stringstream os;
     os << "ResourceCenter focus: " << m_focus << " last changed on turn: " << m_last_turn_focus_changed;
     return os.str();

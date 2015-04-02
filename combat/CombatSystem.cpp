@@ -337,15 +337,9 @@ namespace {
         if (!attacker_design)
             return;
 
-        Meter* target_construction = target->UniverseObject::GetMeter(METER_CONSTRUCTION);
-        if (!target_construction) {
-            ErrorLogger() << "couldn't get target construction meter";
-            return;
-        }
-
         DebugLogger(combat) << "AttackShipPlanet: attacker: " << attacker->Name() << " power: " << power
                           << "\ntarget: " << target->Name() << " shield: " << target->Shield()
-                          << " defense: " << target->Defense() << " infra: " << target_construction->Current();
+                          << " defense: " << target->Defense() << " infra: " << target->Construction();
 
         // damage shields, limited by shield current value and damage amount.
         // remaining damage, if any, above shield current value goes to defense.
@@ -360,7 +354,7 @@ namespace {
             damaged_object_ids.insert(target->ID());
 
         if (defense_damage >= target->Defense())
-            construction_damage = std::min(target_construction->Current(),
+            construction_damage = std::min(target->Construction(),
                                            power - shield_damage - defense_damage);
 
         if (shield_damage >= 0) {
@@ -375,7 +369,7 @@ namespace {
                                 << target->ID() << ")";
         }
         if (construction_damage >= 0) {
-            target_construction->AddToCurrent(-construction_damage);
+            target->GetMeter(METER_CONSTRUCTION)->AddToCurrent(-construction_damage);
             DebugLogger(combat) << "COMBAT: Ship " << attacker->Name() << " (" << attacker->ID() << ") does "
                                 << construction_damage << " instrastructure damage to Planet " << target->Name()
                                 << " (" << target->ID() << ")";
@@ -936,7 +930,7 @@ namespace {
                 }
                 if (planet->Shield() <= 0.0 &&
                     planet->Defense() <= 0.0 &&
-                    target->CurrentMeterValue(METER_CONSTRUCTION) <= 0.0f)
+                    planet->Construction() <= 0.0f)
                 {
                     // An outpost can enter combat in essentially an
                     // incapacitated state, but if it is removed from combat

@@ -16,14 +16,12 @@ namespace {
         if (auto ship = dynamic_cast<const Ship*>(&object)) {
             return ship->MaxStructure();
         } else if (const Planet* planet = dynamic_cast<const Planet*>(&object)) {
-            const Meter* construction = object.UniverseObject::GetMeter(METER_TARGET_CONSTRUCTION);
-
             float ret = 0.0f;
 
             ret += planet->MaxDefense();
             ret += planet->MaxShield();
-            if(construction)
-                ret += construction->Current();
+            ret += planet->TargetConstruction();
+
             return ret;
         }
 
@@ -34,14 +32,12 @@ namespace {
         if (const Ship* ship = dynamic_cast<const Ship*>(&object)) {
             return ship->Structure();
         } else if (const Planet* planet = dynamic_cast<const Planet*>(&object)) {
-            const Meter* construction = object.UniverseObject::GetMeter(METER_CONSTRUCTION);
-
             float ret = 0.0f;
 
             ret += planet->Defense();
             ret += planet->Shield();
-            if(construction)
-                ret += construction->Current();
+            ret += planet->Construction();
+
             return ret;
         }
 
