@@ -799,13 +799,11 @@ void SetActiveMetersToTargetMaxCurrentValues(ObjectMap& object_map) {
 
 void SetNativePopulationValues(ObjectMap& object_map) {
     for (const auto& object : object_map) {
-        Meter* meter = object->GetMeter(METER_POPULATION);
-        Meter* targetmax_meter = object->GetMeter(METER_TARGET_POPULATION);
         // only applies to unowned planets
-        if (meter && targetmax_meter && object->Unowned()) {
+        if (planet->Unowned()) {
             double r = RandZeroToOne();
             double factor = (0.1 < r) ? r : 0.1;
-            meter->SetCurrent(targetmax_meter->Current() * factor);
+            planet->GetMeter(METER_POPULATION)->SetCurrent(planet->TargetPopulation() * factor);
         }
     }
 }

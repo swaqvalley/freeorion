@@ -606,7 +606,7 @@ void SpeciesManager::UpdatePopulationCounter() {
             continue;
 
         try {
-            m_species_object_populations[species][obj->ID()] += obj->CurrentMeterValue(METER_POPULATION);
+            m_species_object_populations[species][obj->ID()] += pop_center->Population();
         } catch (...) {
             continue;
         }

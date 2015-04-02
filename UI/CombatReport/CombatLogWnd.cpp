@@ -81,8 +81,8 @@ namespace {
             auto object = Objects().Object(obj_id); // gets destroyed objects, so this function can be used for initial combat forces even if some are destroyed during the combat
             if (object && (
                     object->ObjectType() == OBJ_SHIP || (
-                        object->GetMeter(METER_POPULATION) &&
-                        object->InitialMeterValue(METER_POPULATION) > 0.0f)))
+                        boost::dynamic_pointer_cast<const PopCenter>(object) &&
+                        boost::dynamic_pointer_cast<const PopCenter>(object)->Population() > 0.0f)))
             {
                 int owner_id = object->Owner();
                 if (!objects_per_owner.count(owner_id))

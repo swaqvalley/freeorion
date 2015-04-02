@@ -64,7 +64,7 @@ CombatInfo::CombatInfo(int system_id_, int turn_) :
 
     for (auto& planet : planets) {
         // if planet is populated or has an owner, add owner to empires that have assets in this battle
-        if (!planet->Unowned() || planet->InitialMeterValue(METER_POPULATION) > 0.0f)
+        if (!planet->Unowned() || planet->Population() > 0.0f)
             empire_ids.insert(planet->Owner());
 
         objects.Insert(planet);
@@ -550,8 +550,8 @@ namespace {
         if (obj_type == OBJ_SHIP || obj_type == OBJ_FIGHTER)
             return true;
 
-        if (obj_type == OBJ_PLANET) {
-            if (!obj->Unowned() || obj->InitialMeterValue(METER_POPULATION) > 0.0f)
+        if (TemporaryPtr<const Planet> planet = boost::dynamic_pointer_cast<const Planet>(obj)) {
+            if (!planet->Unowned() || planet->Population() > 0.0f)
                 return true;
             return false;
         }

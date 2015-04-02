@@ -842,7 +842,7 @@ void Planet::PopGrowthProductionResearchPhase() {
     // should be run after a meter update, but before a backpropagation, so check current, not initial, meter values
 
     // check for colonies without positive population, and change to outposts
-    if (!SpeciesName().empty() && CurrentMeterValue(METER_POPULATION) <= 0.0f) {
+    if (!SpeciesName().empty() && Population() <= 0.0f) {
         if (Empire* empire = GetEmpire(this->Owner())) {
             empire->AddSitRepEntry(CreatePlanetDepopulatedSitRep(this->ID()));
 

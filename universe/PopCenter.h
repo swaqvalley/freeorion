@@ -31,7 +31,16 @@ public:
 
     /** \name Accessors */ //@ {
     const std::string&  SpeciesName() const {return m_species_name;}        ///< returns the name of the species that populates this planet
-    std::string         Dump(unsigned short ntabs = 0) const;
+
+    float               Happiness() const;
+    float               TargetHappiness() const;
+    float               Population() const;
+    float               TargetPopulation() const;
+
+    std::string         Dump() const;
+
+    float               NextTurnPopGrowth() const;                          ///< predicted pop growth next turn
+
     virtual float       InitialMeterValue(MeterType type) const = 0;        ///< implementation should return the initial value of the specified meter \a type
     virtual float       CurrentMeterValue(MeterType type) const = 0;        ///< implementation should current value of the specified meter \a type
     //@}

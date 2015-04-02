@@ -470,7 +470,7 @@ namespace AIInterface {
             ErrorLogger() << "IssueColonizeOrder : no planet with passed planet_id";
             return 0;
         }
-        if ((!planet->Unowned()) && !( planet->OwnedBy(empire_id) && planet->InitialMeterValue(METER_POPULATION) == 0.0f)) {
+        if ((!planet->Unowned()) && !( planet->OwnedBy(empire_id) && planet->Population() == 0)) {
             ErrorLogger() << "IssueColonizeOrder : planet with passed planet_id "<<planet_id<<" is already owned, or colonized by own empire";
             return 0;
         }
@@ -525,7 +525,7 @@ namespace AIInterface {
         }
         bool owned_by_invader = planet->OwnedBy(empire_id);
         bool unowned = planet->Unowned();
-        bool populated = planet->InitialMeterValue(METER_POPULATION) > 0.0f;
+        bool populated = planet->Population() > 0.0f;
         bool visible = GetUniverse().GetObjectVisibilityByEmpire(planet_id, empire_id) >= VIS_PARTIAL_VISIBILITY;
         bool vulnerable = planet->Shield() <= 0.0f;
         float shields = planet->Shield();

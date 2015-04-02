@@ -6783,7 +6783,7 @@ void MapWnd::RefreshPopulationIndicator() {
         const std::string& species_name = pc->SpeciesName();
         if (species_name.empty())
             continue;
-        float this_pop = pc->InitialMeterValue(METER_POPULATION);
+        float this_pop = pc->Population();
         population_counts[species_name] += this_pop;
         if (const Species* species = GetSpecies(species_name) ) {
             for (const std::string& tag : species->Tags()) {

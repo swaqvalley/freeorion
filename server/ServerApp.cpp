@@ -1803,7 +1803,7 @@ namespace {
         for (auto& planet : Objects().FindObjects<const Planet>(system->PlanetIDs())) {
             if (!planet->Unowned())
                 empire_planets[planet->Owner()].insert(planet->ID());
-            else if (planet->InitialMeterValue(METER_POPULATION) > 0.0f)
+            else if (planet->Population() > 0.0)
                 empire_planets[ALL_EMPIRES].insert(planet->ID());
         }
     }
@@ -1899,7 +1899,7 @@ namespace {
                     continue;
                 // skip planets that have no owner and that are unpopulated; don't matter for combat conditions test
                 auto planet = GetPlanet(planet_id);
-                if (planet->Unowned() && planet->InitialMeterValue(METER_POPULATION) <= 0.0f)
+                if (planet->Unowned() && planet->Population() <= 0.0f)
                     continue;
                 visible_planets.insert(planet->ID());
             }

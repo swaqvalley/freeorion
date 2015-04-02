@@ -49,7 +49,19 @@ void PopCenter::Init() {
     AddMeter(METER_TARGET_HAPPINESS);
 }
 
-std::string PopCenter::Dump(unsigned short ntabs) const {
+float PopCenter::Happiness() const
+{ return CurrentMeterValue(METER_HAPPINESS); }
+
+float PopCenter::TargetHappiness() const
+{ return CurrentMeterValue(METER_TARGET_HAPPINESS); }
+
+float PopCenter::Population() const
+{ return CurrentMeterValue(METER_POPULATION); }
+
+float PopCenter::TargetPopulation() const
+{ return CurrentMeterValue(METER_TARGET_POPULATION); }
+
+std::string PopCenter::Dump() const {
     std::stringstream os;
     os << " species: " << m_species_name << "  ";
     return os.str();

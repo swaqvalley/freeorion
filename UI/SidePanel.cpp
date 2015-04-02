@@ -1299,7 +1299,7 @@ int AutomaticallyChosenColonyShip(int target_planet_id) {
     if (!system)
         return INVALID_OBJECT_ID;
     // is planet a valid colonization target?
-    if (target_planet->InitialMeterValue(METER_POPULATION) > 0.0 ||
+    if (target_planet->Population() > 0.0 ||
         (!target_planet->Unowned() && !target_planet->OwnedBy(empire_id)))
     { return INVALID_OBJECT_ID; }
 
@@ -1371,7 +1371,7 @@ int AutomaticallyChosenColonyShip(int target_planet_id) {
 
                         // temporary meter update with currently set species
                         GetUniverse().UpdateMeterEstimates(target_planet_id);
-                        planet_capacity = target_planet->CurrentMeterValue(METER_TARGET_POPULATION);    // want value after meter update, so check current, not initial value
+                        planet_capacity = target_planet->TargetPopulation();
                     }
                     species_colony_projections[spec_pair] = planet_capacity;
                 }
@@ -1590,7 +1590,7 @@ void SidePanel::PlanetPanel::Refresh() {
     // calculate truth tables for planet colonization and invasion
     bool has_owner =        !planet->Unowned();
     bool mine =             planet->OwnedBy(client_empire_id);
-    bool populated =        planet->InitialMeterValue(METER_POPULATION) > 0.0f;
+    bool populated =        planet->Population() > 0.0;
     bool habitable =        planet_env_for_colony_species >= PE_HOSTILE && planet_env_for_colony_species <= PE_GOOD;
     bool visible =          GetUniverse().GetObjectVisibilityByEmpire(m_planet_id, client_empire_id) >= VIS_PARTIAL_VISIBILITY;
     bool shielded =         planet->Shield() > 0.0;
@@ -1692,7 +1692,7 @@ void SidePanel::PlanetPanel::Refresh() {
 
             // temporary meter updates for curently set species
             GetUniverse().UpdateMeterEstimates(m_planet_id);
-            planet_capacity = ((planet_env_for_colony_species == PE_UNINHABITABLE) ? 0 : planet->CurrentMeterValue(METER_TARGET_POPULATION));   // want target pop after meter update, so check current value of meter
+            planet_capacity = ((planet_env_for_colony_species == PE_UNINHABITABLE) ? 0 : planet->TargetPopulation());
             planet->SetOwner(orig_owner);
             planet->SetSpecies(orig_species);
             planet->GetMeter(METER_TARGET_POPULATION)->Set(orig_initial_target_pop, orig_initial_target_pop);
@@ -2234,7 +2234,7 @@ void SidePanel::PlanetPanel::ClickColonize() {
     // been ordered
 
     auto planet = GetPlanet(m_planet_id);
-    if (!planet || planet->InitialMeterValue(METER_POPULATION) != 0.0 || !m_order_issuing_enabled)
+    if (!planet || planet->Population() != 0.0 || !m_order_issuing_enabled)
         return;
 
     int empire_id = HumanClientApp::GetApp()->EmpireID();
@@ -2278,7 +2278,7 @@ void SidePanel::PlanetPanel::ClickInvade() {
     auto planet = GetPlanet(m_planet_id);
     if (!planet ||
         !m_order_issuing_enabled ||
-        (planet->InitialMeterValue(METER_POPULATION) <= 0.0 && planet->Unowned()))
+        (planet->Population() <= 0.0 && planet->Unowned()))
     { return; }
 
     int empire_id = HumanClientApp::GetApp()->EmpireID();
@@ -2323,7 +2323,7 @@ void SidePanel::PlanetPanel::ClickBombard() {
     auto planet = GetPlanet(m_planet_id);
     if (!planet ||
         !m_order_issuing_enabled ||
-        (planet->InitialMeterValue(METER_POPULATION) <= 0.0 && planet->Unowned()))
+        (planet->Population() <= 0.0 && planet->Unowned()))
     { return; }
 
     int empire_id = HumanClientApp::GetApp()->EmpireID();
