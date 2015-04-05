@@ -310,7 +310,7 @@ namespace {
         float damage = std::max(0.0f, power - target->Shield());
 
         if (damage > 0.0f) {
-            target->GetMeter(METER_STRUCTURE)->AddToCurrent(-damage);
+            target->GetMeter(METER_STRUCTURE)->SetCurrent(target->Structure() - damage);
             damaged_object_ids.insert(target->ID());
             DebugLogger(combat) << "COMBAT: Ship " << attacker->Name() << " (" << attacker->ID() << ") does " << damage << " damage to Ship " << target->Name() << " (" << target->ID() << ")";
         }
@@ -358,18 +358,18 @@ namespace {
                                            power - shield_damage - defense_damage);
 
         if (shield_damage >= 0) {
-            target->GetMeter(METER_SHIELD)->AddToCurrent(-shield_damage);
+            target->GetMeter(METER_SHIELD)->SetCurrent(target->Shield() - shield_damage);
             DebugLogger(combat) << "COMBAT: Ship " << attacker->Name() << " (" << attacker->ID() << ") does "
                                 << shield_damage << " shield damage to Planet " << target->Name() << " ("
                                 << target->ID() << ")";
         if (defense_damage >= 0) {
-            target->GetMeter(METER_DEFENSE)->AddToCurrent(-defense_damage);
+            target->GetMeter(METER_DEFENSE)->SetCurrent(target->Defense() - defense_damage);
             DebugLogger(combat) << "COMBAT: Ship " << attacker->Name() << " (" << attacker->ID() << ") does "
                                 << defense_damage << " defense damage to Planet " << target->Name() << " ("
                                 << target->ID() << ")";
         }
         if (construction_damage >= 0) {
-            target->GetMeter(METER_CONSTRUCTION)->AddToCurrent(-construction_damage);
+            target->GetMeter(METER_CONSTRUCTION)->SetCurrent(target->Construction() - construction_damage);
             DebugLogger(combat) << "COMBAT: Ship " << attacker->Name() << " (" << attacker->ID() << ") does "
                                 << construction_damage << " instrastructure damage to Planet " << target->Name()
                                 << " (" << target->ID() << ")";
@@ -418,7 +418,7 @@ namespace {
         float damage = std::max(0.0f, power - target->Shield());
 
         if (damage > 0.0f) {
-            target->GetMeter(METER_STRUCTURE)->AddToCurrent(-damage);
+            target->GetMeter(METER_STRUCTURE)->SetCurrent(target->Structure() - damage);
             damaged_object_ids.insert(target->ID());
             DebugLogger(combat) << "COMBAT: Planet " << attacker->Name() << " (" << attacker->ID()
                                 << ") does " << damage << " damage to Ship " << target->Name() << " ("
@@ -468,7 +468,7 @@ namespace {
         float damage = std::max(0.0f, power - shield);
 
         if (damage > 0.0f) {
-            target->GetMeter(METER_STRUCTURE)->AddToCurrent(-damage);
+            target->GetMeter(METER_STRUCTURE)->SetCurrent(target->Structure() - damage);
             damaged_object_ids.insert(target->ID());
             DebugLogger(combat) << "COMBAT: Fighter of empire " << attacker->Owner() << " (" << attacker->ID()
                                 << ") does " << damage << " damage to Ship " << target->Name() << " ("

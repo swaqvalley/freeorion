@@ -843,7 +843,7 @@ void Fleet::MovementPhase() {
             //    FinalDestinationID() == SystemID())
             //{
             //    for (auto& ship : ships) {
-            //        ship->GetMeter(METER_FUEL)->AddToCurrent(0.1001f);  // .0001 to prevent rounding down
+            //        ship->GetMeter(METER_FUEL)->SetCurrent(ship->Fuel() + 0.1001f);  // .0001 to prevent rounding down
             //        ship->GetMeter(METER_FUEL)->BackPropagate();
             //    }
             //}
@@ -992,7 +992,7 @@ void Fleet::MovementPhase() {
     // consume fuel from ships in fleet
     if (fuel_consumed > 0.0f) {
         for (auto& ship : ships) {
-            ship->GetMeter(METER_FUEL)->AddToCurrent(-fuel_consumed);
+            ship->GetMeter(METER_FUEL)->SetCurrent(ship->Fuel() - fuel_consumed);
             ship->GetMeter(METER_FUEL)->BackPropagate();
         }
     }

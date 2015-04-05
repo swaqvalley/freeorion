@@ -41,8 +41,7 @@ public:
     void SetCurrent(float current_value = DEFAULT_VALUE);    ///< sets current value, leaving initial value unchanged
     void Set(float current_value = DEFAULT_VALUE, float initial_value = DEFAULT_VALUE);  ///< sets current and initial values
 
-    void AddToCurrent(float adjustment);    ///< adds \a current to the current value of the Meter
-    void ClampCurrentToRange(float min = DEFAULT_VALUE, float max = LARGE_VALUE);   ///< ensures the current value falls in the range [\a min, \a max]
+    void ClampCurrentToRange(float min = DEFAULT_VALUE, float max = LARGE_VALUE);    ///< ensures the current value falls in the range [\a min, \a max]
 
     void BackPropagate();                   ///< sets previous equal to initial, then sets initial equal to current
     //@}

@@ -39,9 +39,6 @@ void Meter::Set(float current_value, float initial_value) {
     m_initial_value = initial_value;
 }
 
-void Meter::AddToCurrent(float adjustment)
-{ m_current_value += adjustment; }
-
 void Meter::ClampCurrentToRange(float min/* = DEFAULT_VALUE*/, float max/* = LARGE_VALUE*/)
 { m_current_value = std::max(std::min(m_current_value, max), min); }
 

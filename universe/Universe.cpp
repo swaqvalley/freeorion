@@ -648,7 +648,7 @@ void Universe::InitMeterEstimatesAndDiscrepancies() {
             m_effect_discrepancy_map[object_id][type] = discrepancy;
 
             // correct current max meter estimate for discrepancy
-            meter.AddToCurrent(discrepancy);
+            meter.SetCurrent(meter.Current() + discrepancy);
 
             // add discrepancy adjustment to meter accounting
             Effect::AccountingInfo info;
@@ -823,7 +823,7 @@ void Universe::UpdateMeterEstimatesImpl(const std::vector<int>& objects_vec, boo
                 TraceLogger(effects) << "object " << obj_id << " has meter " << type
                                      << ": discrepancy: " << discrepancy << " and : " << meter->Dump();
 
-                meter->AddToCurrent(discrepancy);
+                meter->SetCurrent(meter->Current() + discrepancy);
 
                 Effect::AccountingInfo info;
                 info.cause_type = ECT_UNKNOWN_CAUSE;
