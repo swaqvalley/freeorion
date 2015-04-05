@@ -1004,8 +1004,7 @@ void Fleet::ResetTargetMaxUnpairedMeters() {
     // give fleets base stealth very high, so that they can (almost?) never be
     // seen by empires that don't own them, unless their ships are seen and
     // that visibility is propagated to the fleet that contains the ships
-    GetMeter(METER_STEALTH)->ResetCurrent();
-    GetMeter(METER_STEALTH)->AddToCurrent(2000.0f);
+    GetMeter(METER_STEALTH)->SetCurrent(2000.0f);
 }
 
 void Fleet::CalculateRouteTo(int target_system_id) {

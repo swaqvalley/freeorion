@@ -39,9 +39,6 @@ void Meter::Set(float current_value, float initial_value) {
     m_initial_value = initial_value;
 }
 
-void Meter::ResetCurrent()
-{ m_current_value = DEFAULT_VALUE; } // initial unchanged
-
 void Meter::Reset() {
     m_current_value = DEFAULT_VALUE;
     m_initial_value = DEFAULT_VALUE;

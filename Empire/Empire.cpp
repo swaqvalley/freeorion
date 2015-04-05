@@ -2181,7 +2181,7 @@ void Empire::UpdatePopulationGrowth()
 
 void Empire::ResetMeters() {
     for (auto& entry : m_meters) {
-        entry.second.ResetCurrent();
+        entry.second.SetCurrent();
     }
 }
 

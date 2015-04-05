@@ -649,16 +649,16 @@ void Ship::ClearBombardPlanet()
 void Ship::ResetTargetMaxUnpairedMeters() {
     UniverseObject::ResetTargetMaxUnpairedMeters();
 
-    UniverseObject::GetMeter(METER_MAX_FUEL)->ResetCurrent();
-    UniverseObject::GetMeter(METER_MAX_SHIELD)->ResetCurrent();
-    UniverseObject::GetMeter(METER_MAX_STRUCTURE)->ResetCurrent();
-    UniverseObject::GetMeter(METER_TARGET_INDUSTRY)->ResetCurrent();
-    UniverseObject::GetMeter(METER_TARGET_RESEARCH)->ResetCurrent();
-    UniverseObject::GetMeter(METER_TARGET_TRADE)->ResetCurrent();
+    UniverseObject::GetMeter(METER_MAX_FUEL)->SetCurrent();
+    UniverseObject::GetMeter(METER_MAX_SHIELD)->SetCurrent();
+    UniverseObject::GetMeter(METER_MAX_STRUCTURE)->SetCurrent();
+    UniverseObject::GetMeter(METER_TARGET_INDUSTRY)->SetCurrent();
+    UniverseObject::GetMeter(METER_TARGET_RESEARCH)->SetCurrent();
+    UniverseObject::GetMeter(METER_TARGET_TRADE)->SetCurrent();
 
-    UniverseObject::GetMeter(METER_DETECTION)->ResetCurrent();
-    UniverseObject::GetMeter(METER_SPEED)->ResetCurrent();
-    //UniverseObject::GetMeter(METER_STEALTH)->ResetCurrent(); redundant with base class function
+    UniverseObject::GetMeter(METER_DETECTION)->SetCurrent();
+    UniverseObject::GetMeter(METER_SPEED)->SetCurrent();
+    //UniverseObject::GetMeter(METER_STEALTH)->SetCurrent(); redundant with base class function
 
     for (auto& entry : m_part_meters) {
         auto max_it = m_part_meters.end();
@@ -669,7 +669,7 @@ void Ship::ResetTargetMaxUnpairedMeters() {
         }
         if (max_it != m_part_meters.end())
             continue;
-        entry.second.ResetCurrent();
+        entry.second.SetCurrent();
     }
 }
 

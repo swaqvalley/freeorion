@@ -154,10 +154,10 @@ void ResourceCenter::UpdateFocusHistory() {
 }
 
 void ResourceCenter::ResourceCenterResetTargetMaxUnpairedMeters() {
-    GetMeter(METER_TARGET_INDUSTRY)->ResetCurrent();
-    GetMeter(METER_TARGET_RESEARCH)->ResetCurrent();
-    GetMeter(METER_TARGET_TRADE)->ResetCurrent();
-    GetMeter(METER_TARGET_CONSTRUCTION)->ResetCurrent();
+    GetMeter(METER_TARGET_INDUSTRY)->SetCurrent();
+    GetMeter(METER_TARGET_RESEARCH)->SetCurrent();
+    GetMeter(METER_TARGET_TRADE)->SetCurrent();
+    GetMeter(METER_TARGET_CONSTRUCTION)->SetCurrent();
 }
 
 void ResourceCenter::ResourceCenterClampMeters() {

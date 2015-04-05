@@ -76,8 +76,8 @@ float PopCenter::CurrentMeterValue(MeterType type) const {
 }
 
 void PopCenter::PopCenterResetTargetMaxUnpairedMeters() {
-    GetMeter(METER_TARGET_POPULATION)->ResetCurrent();
-    GetMeter(METER_TARGET_HAPPINESS)->ResetCurrent();
+    GetMeter(METER_TARGET_POPULATION)->SetCurrent();
+    GetMeter(METER_TARGET_HAPPINESS)->SetCurrent();
 }
 
 void PopCenter::PopCenterPopGrowthProductionResearchPhase() {

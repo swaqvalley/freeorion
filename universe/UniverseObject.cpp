@@ -379,7 +379,7 @@ std::map<MeterType, Meter> UniverseObject::CensoredMeters(Visibility vis) const 
 }
 
 void UniverseObject::ResetTargetMaxUnpairedMeters() {
-    GetMeter(METER_STEALTH)->ResetCurrent();
+    GetMeter(METER_STEALTH)->SetCurrent();
 }
 
 void UniverseObject::ResetPairedActiveMeters() {

@@ -867,8 +867,8 @@ void Planet::ResetTargetMaxUnpairedMeters() {
     ResourceCenterResetTargetMaxUnpairedMeters();
     PopCenterResetTargetMaxUnpairedMeters();
 
-    GetMeter(METER_MAX_SUPPLY)->ResetCurrent();
-    GetMeter(METER_MAX_STOCKPILE)->ResetCurrent();
+    GetMeter(METER_MAX_SUPPLY)->SetCurrent();
+    GetMeter(METER_MAX_STOCKPILE)->SetCurrent();
     GetMeter(METER_MAX_SHIELD)->ResetCurrent();
     GetMeter(METER_MAX_DEFENSE)->ResetCurrent();
     GetMeter(METER_MAX_TROOPS)->ResetCurrent();

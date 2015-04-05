@@ -489,7 +489,7 @@ void System::SetLastTurnBattleHere(int turn)
 void System::ResetTargetMaxUnpairedMeters() {
     UniverseObject::ResetTargetMaxUnpairedMeters();
 
-    GetMeter(METER_STEALTH)->ResetCurrent();
+    GetMeter(METER_STEALTH)->SetCurrent();
 }
 
 bool System::OrbitOccupied(int orbit) const {

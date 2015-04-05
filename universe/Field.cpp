@@ -154,7 +154,7 @@ bool Field::InField(double x, double y) const {
 void Field::ResetTargetMaxUnpairedMeters() {
     UniverseObject::ResetTargetMaxUnpairedMeters();
 
-    GetMeter(METER_SPEED)->ResetCurrent();
+    GetMeter(METER_SPEED)->SetCurrent();
     // intentionally not resetting size, so that it is presistant
 }
 
