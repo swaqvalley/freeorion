@@ -33,15 +33,9 @@ def inspect_ai_interface():
 
     color = empire.colour
 
-    part_meters = ship.partMeters
-
-    meter = planet.getMeter(fo.meterType.population)
-
     inspect(
         fo,
-        instances=[
-            meter,
-            part_meters,
+        [
             color,
             universe,
             fleet,

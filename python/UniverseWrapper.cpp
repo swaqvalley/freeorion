@@ -173,20 +173,12 @@ namespace {
     }
     boost::function<std::map<int, double> (const Universe&, int, int)> SystemNeighborsMapFunc = &SystemNeighborsMapP;
 
-    const Meter*            (UniverseObject::*ObjectGetMeter)(MeterType) const =                &UniverseObject::GetMeter;
-    const std::map<MeterType, Meter>&
-                            (UniverseObject::*ObjectMeters)(void) const =                       &UniverseObject::Meters;
-
     std::vector<std::string> ObjectSpecials(const UniverseObject& object) {
         std::vector<std::string> retval;
         for (const auto& special : object.Specials())
         { retval.push_back(special.first); }
         return retval;
     }
-
-    const Meter*            (Ship::*ShipGetPartMeter)(MeterType, const std::string&) const =    &Ship::GetPartMeter;
-    const Ship::PartMeterMap&
-                            (Ship::*ShipPartMeters)(void) const =                               &Ship::PartMeters;
 
     const std::string&      ShipDesignName(const ShipDesign& ship_design)
     { return ship_design.Name(false); }
@@ -289,17 +281,6 @@ namespace FreeOrionPython {
         ;
         class_<std::vector<ShipSlotType>>("ShipSlotVec")
             .def(boost::python::vector_indexing_suite<std::vector<ShipSlotType>, true>())
-        ;
-        class_<std::map<MeterType, Meter>>("MeterTypeMeterMap")
-            .def(boost::python::map_indexing_suite<std::map<MeterType, Meter>, true>())
-        ;
-        // typedef std::map<std::pair<MeterType, std::string>, Meter>          PartMeterMap;
-        class_<std::pair<MeterType, std::string>>("MeterTypeStringPair")
-            .add_property("meterType",  &std::pair<MeterType, std::string>::first)
-            .add_property("string",     &std::pair<MeterType, std::string>::second)
-        ;
-        class_<Ship::PartMeterMap>("ShipPartMeterMap")
-            .def(boost::python::map_indexing_suite<Ship::PartMeterMap>())
         ;
 
         ///////////////////////////
@@ -468,12 +449,9 @@ namespace FreeOrionPython {
             .def("containedBy",                 &UniverseObject::ContainedBy)
             .add_property("containedObjects",   make_function(&UniverseObject::ContainedObjectIDs,  return_value_policy<return_by_value>()))
             .add_property("containerObject",    &UniverseObject::ContainerObjectID)
-            .def("currentMeterValue",           &UniverseObject::CurrentMeterValue)
-            .def("initialMeterValue",           &UniverseObject::InitialMeterValue)
+            .def("nextTurnCurrentMeterValue",   &UniverseObject::NextTurnCurrentMeterValue)
             .add_property("tags",               make_function(&UniverseObject::Tags,        return_value_policy<return_by_value>()))
             .def("hasTag",                      &UniverseObject::HasTag)
-            .add_property("meters",             make_function(ObjectMeters,                 return_internal_reference<>()))
-            .def("getMeter",                    make_function(ObjectGetMeter,               return_internal_reference<>()))
             .add_property("dump",               &UniverseObject::Dump)
         ;
 
@@ -526,8 +504,6 @@ namespace FreeOrionPython {
             .add_property("orderedInvadePlanet",    &Ship::OrderedInvadePlanet)
             .def("initialPartMeterValue",           &Ship::InitialPartMeterValue)
             .def("currentPartMeterValue",           &Ship::CurrentPartMeterValue)
-            .add_property("partMeters",             make_function(ShipPartMeters,           return_internal_reference<>()))
-            .def("getMeter",                        make_function(ShipGetPartMeter,         return_internal_reference<>()))
             .def("shield",                          &Ship::Shield)
             .def("maxShield",                       &Ship::MaxShield)
             .def("structure",                       &Ship::Structure)
