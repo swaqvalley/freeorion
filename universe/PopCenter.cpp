@@ -98,16 +98,16 @@ void PopCenter::PopCenterClampMeters()
 { GetMeter(METER_POPULATION)->ClampCurrentToRange(); }
 
 void PopCenter::Reset() {
-    GetMeter(METER_POPULATION)->Reset();
-    GetMeter(METER_TARGET_POPULATION)->Reset();
-    GetMeter(METER_HAPPINESS)->Reset();
-    GetMeter(METER_TARGET_HAPPINESS)->Reset();
+    GetMeter(METER_POPULATION)->Set();
+    GetMeter(METER_TARGET_POPULATION)->Set();
+    GetMeter(METER_HAPPINESS)->Set();
+    GetMeter(METER_TARGET_HAPPINESS)->Set();
     m_species_name.clear();
 }
 
 void PopCenter::Depopulate() {
-    GetMeter(METER_POPULATION)->Reset();
-    GetMeter(METER_HAPPINESS)->Reset();
+    GetMeter(METER_POPULATION)->Set();
+    GetMeter(METER_HAPPINESS)->Set();
 }
 
 void PopCenter::SetSpecies(const std::string& species_name) {

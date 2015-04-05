@@ -176,13 +176,13 @@ void ResourceCenter::Reset() {
     m_focus.clear();
     m_last_turn_focus_changed = INVALID_GAME_TURN;
 
-    GetMeter(METER_INDUSTRY)->Reset();
-    GetMeter(METER_RESEARCH)->Reset();
-    GetMeter(METER_TRADE)->Reset();
-    GetMeter(METER_CONSTRUCTION)->Reset();
+    GetMeter(METER_INDUSTRY)->Set();
+    GetMeter(METER_RESEARCH)->Set();
+    GetMeter(METER_TRADE)->Set();
+    GetMeter(METER_CONSTRUCTION)->Set();
 
-    GetMeter(METER_TARGET_INDUSTRY)->Reset();
-    GetMeter(METER_TARGET_RESEARCH)->Reset();
-    GetMeter(METER_TARGET_TRADE)->Reset();
-    GetMeter(METER_TARGET_CONSTRUCTION)->Reset();
+    GetMeter(METER_TARGET_INDUSTRY)->Set();
+    GetMeter(METER_TARGET_RESEARCH)->Set();
+    GetMeter(METER_TARGET_TRADE)->Set();
+    GetMeter(METER_TARGET_CONSTRUCTION)->Set();
 }

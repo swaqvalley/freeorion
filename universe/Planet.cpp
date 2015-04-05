@@ -628,16 +628,16 @@ void Planet::Reset() {
     PopCenter::Reset();
     ResourceCenter::Reset();
 
-    GetMeter(METER_SUPPLY)->Reset();
-    GetMeter(METER_MAX_SUPPLY)->Reset();
-    GetMeter(METER_STOCKPILE)->Reset();
-    GetMeter(METER_MAX_STOCKPILE)->Reset();
-    GetMeter(METER_SHIELD)->Reset();
-    GetMeter(METER_MAX_SHIELD)->Reset();
-    GetMeter(METER_DEFENSE)->Reset();
-    GetMeter(METER_MAX_DEFENSE)->Reset();
-    GetMeter(METER_DETECTION)->Reset();
-    GetMeter(METER_REBEL_TROOPS)->Reset();
+    GetMeter(METER_SUPPLY)->Set();
+    GetMeter(METER_MAX_SUPPLY)->Set();
+    GetMeter(METER_STOCKPILE)->Set();
+    GetMeter(METER_MAX_STOCKPILE)->Set();
+    GetMeter(METER_SHIELD)->Set();
+    GetMeter(METER_MAX_SHIELD)->Set();
+    GetMeter(METER_DEFENSE)->Set();
+    GetMeter(METER_MAX_DEFENSE)->Set();
+    GetMeter(METER_DETECTION)->Set();
+    GetMeter(METER_REBEL_TROOPS)->Set();
 
     if (m_is_about_to_be_colonized && !OwnedBy(ALL_EMPIRES)) {
         for (int building_id : m_buildings)
@@ -655,10 +655,10 @@ void Planet::Reset() {
 void Planet::Depopulate() {
     PopCenter::Depopulate();
 
-    GetMeter(METER_INDUSTRY)->Reset();
-    GetMeter(METER_RESEARCH)->Reset();
-    GetMeter(METER_TRADE)->Reset();
-    GetMeter(METER_CONSTRUCTION)->Reset();
+    GetMeter(METER_INDUSTRY)->Set();
+    GetMeter(METER_RESEARCH)->Set();
+    GetMeter(METER_TRADE)->Set();
+    GetMeter(METER_CONSTRUCTION)->Set();
 
     ClearFocus();
 }
