@@ -107,13 +107,11 @@ def avail_mil_needing_repair(mil_fleet_ids, split_ships=False, on_mission=False,
         ships_cur_health = [0, 0]
         ships_max_health = [0, 0]
         for ship_id in fleet.shipIDs:
-            this_ship = universe.getShip(ship_id)
-            cur_struc = this_ship.initialMeterValue(fo.meterType.structure)
-            max_struc = this_ship.initialMeterValue(fo.meterType.maxStructure)
-            ship_ok = cur_struc >= cutoff * max_struc
+            ship = universe.getShip(ship_id)
+            ship_ok = ship.structure >= cutoff * ship.maxStructure
             ship_buckets[ship_ok].append(ship_id)
-            ships_cur_health[ship_ok] += cur_struc
-            ships_max_health[ship_ok] += max_struc
+            ships_cur_health[ship_ok] += ship.structure
+            ships_max_health[ship_ok] += ship.maxStructure
         this_sys_id = fleet.systemID if fleet.nextSystemID == INVALID_ID else fleet.nextSystemID
         fleet_ok = (sum(ships_cur_health) >= cutoff * sum(ships_max_health))
         local_status = foAI.foAIstate.systemStatus.get(this_sys_id, {})

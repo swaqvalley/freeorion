@@ -528,6 +528,10 @@ namespace FreeOrionPython {
             .def("currentPartMeterValue",           &Ship::CurrentPartMeterValue)
             .add_property("partMeters",             make_function(ShipPartMeters,           return_internal_reference<>()))
             .def("getMeter",                        make_function(ShipGetPartMeter,         return_internal_reference<>()))
+            .def("shield",                          &Ship::Shield)
+            .def("maxShield",                       &Ship::MaxShield)
+            .def("structure",                       &Ship::Structure)
+            .def("maxStructure",                    &Ship::MaxStructure)
         ;
 
         //////////////////
