@@ -2707,8 +2707,8 @@ namespace {
 
             } else {
                 // no troops left?
-                planet->GetMeter(METER_TROOPS)->SetCurrent(0.0);
-                planet->GetMeter(METER_REBEL_TROOPS)->SetCurrent(0.0);
+                planet->GetMeter(METER_TROOPS)->SetCurrent();
+                planet->GetMeter(METER_REBEL_TROOPS)->SetCurrent();
             }
 
             planet->BackPropagateMeters();

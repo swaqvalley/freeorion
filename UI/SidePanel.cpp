@@ -1367,9 +1367,7 @@ int AutomaticallyChosenColonyShip(int target_planet_id) {
                         changed_planet = true;
                         target_planet->SetOwner(empire_id);
                         target_planet->SetSpecies(ship_species_name);
-                        target_planet->GetMeter(METER_TARGET_POPULATION)->Reset();
-
-                        // temporary meter update with currently set species
+                        target_planet->GetMeter(METER_TARGET_POPULATION)->Set();
                         GetUniverse().UpdateMeterEstimates(target_planet_id);
                         planet_capacity = target_planet->TargetPopulation();
                     }
@@ -1688,9 +1686,7 @@ void SidePanel::PlanetPanel::Refresh() {
             float orig_initial_target_pop = planet->GetMeter(METER_TARGET_POPULATION)->Initial();
             planet->SetOwner(client_empire_id);
             planet->SetSpecies(colony_ship_species_name);
-            planet->GetMeter(METER_TARGET_POPULATION)->Reset();
-
-            // temporary meter updates for curently set species
+            planet->GetMeter(METER_TARGET_POPULATION)->Set();
             GetUniverse().UpdateMeterEstimates(m_planet_id);
             planet_capacity = ((planet_env_for_colony_species == PE_UNINHABITABLE) ? 0 : planet->TargetPopulation());
             planet->SetOwner(orig_owner);

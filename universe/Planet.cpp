@@ -694,23 +694,23 @@ void Planet::Conquer(int conquerer) {
     // replace ownership
     SetOwner(conquerer);
 
-    GetMeter(METER_SUPPLY)->SetCurrent(0.0f);
+    GetMeter(METER_SUPPLY)->SetCurrent();
     GetMeter(METER_SUPPLY)->BackPropagate();
-    GetMeter(METER_STOCKPILE)->SetCurrent(0.0f);
+    GetMeter(METER_STOCKPILE)->SetCurrent();
     GetMeter(METER_STOCKPILE)->BackPropagate();
-    GetMeter(METER_INDUSTRY)->SetCurrent(0.0f);
+    GetMeter(METER_INDUSTRY)->SetCurrent();
     GetMeter(METER_INDUSTRY)->BackPropagate();
-    GetMeter(METER_RESEARCH)->SetCurrent(0.0f);
+    GetMeter(METER_RESEARCH)->SetCurrent();
     GetMeter(METER_RESEARCH)->BackPropagate();
-    GetMeter(METER_TRADE)->SetCurrent(0.0f);
+    GetMeter(METER_TRADE)->SetCurrent();
     GetMeter(METER_TRADE)->BackPropagate();
-    GetMeter(METER_CONSTRUCTION)->SetCurrent(0.0f);
+    GetMeter(METER_CONSTRUCTION)->SetCurrent();
     GetMeter(METER_CONSTRUCTION)->BackPropagate();
-    GetMeter(METER_DEFENSE)->SetCurrent(0.0f);
+    GetMeter(METER_DEFENSE)->SetCurrent();
     GetMeter(METER_DEFENSE)->BackPropagate();
-    GetMeter(METER_SHIELD)->SetCurrent(0.0f);
+    GetMeter(METER_SHIELD)->SetCurrent();
     GetMeter(METER_SHIELD)->BackPropagate();
-    GetMeter(METER_HAPPINESS)->SetCurrent(0.0f);
+    GetMeter(METER_HAPPINESS)->SetCurrent();
     GetMeter(METER_HAPPINESS)->BackPropagate();
     GetMeter(METER_DETECTION)->SetCurrent(0.0f);
     GetMeter(METER_DETECTION)->BackPropagate();
