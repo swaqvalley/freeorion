@@ -899,7 +899,12 @@ Zmień
 
 
 ##
-## FOCS condition descriptions
+## FOCS effect descriptions
+##
+
+
+##
+## FOCS meter setter
 ##
 
 

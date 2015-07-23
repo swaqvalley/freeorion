@@ -1282,27 +1282,6 @@ DESC_VAR_OWNER
 
 
 ##
-## FOCS condition descriptions
-##
-
-DESC_ALL
-''' i universumet'''
-
-# %1% name of the empire this condition applies to.
-DESC_EMPIRE_AFFILIATION_SELF
-''' det tillhör %1%-imperiet'''
-
-# %1% name of the empire this condition does not apply to.
-DESC_EMPIRE_AFFILIATION_SELF_NOT
-''' det tillhör inte %1%-imperiet'''
-
-# %1% the affiliation the empire should have to the object.
-# %2% name of the empire this condition applies to.
-DESC_EMPIRE_AFFILIATION
-''' det tillhör en %1% av %2%-imperiet'''
-
-
-##
 ## Technology categories
 ##
 

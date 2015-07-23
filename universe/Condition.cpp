@@ -343,13 +343,12 @@ std::string Number::Description(bool negated/* = false*/) const {
                                       m_high->Description())
                                    : std::to_string(INT_MAX));
 
-    const std::string& description_str = (!negated)
-        ? UserString("DESC_NUMBER")
-        : UserString("DESC_NUMBER_NOT");
-    return str(FlexibleFormat(description_str)
-               % low_str
-               % high_str
-               % m_condition->Description());
+    return str(boost::format((!negated)
+        ? " if there are between %1% and %2% objects%3%"
+        : " if there are not between %1% and %2% objects%3%")
+            % low_str
+            % high_str
+            % m_condition->Description());
 }
 
 std::string Number::Dump(unsigned short ntabs) const {
@@ -563,34 +562,33 @@ std::string Turn::Description(bool negated/* = false*/) const {
         high_str = (m_high->ConstantExpr() ?
                     std::to_string(m_high->Eval()) :
                     m_high->Description());
-    std::string description_str;
-
-    if (m_low && m_high) {
-        description_str = (!negated)
-            ? UserString("DESC_TURN")
-            : UserString("DESC_TURN_NOT");
-        return str(FlexibleFormat(description_str)
-                   % low_str
-                   % high_str);
-
-    } else if (m_low) {
-        description_str = (!negated)
-            ? UserString("DESC_TURN_MIN_ONLY")
-            : UserString("DESC_TURN_MIN_ONLY_NOT");
-        return str(FlexibleFormat(description_str)
-                   % low_str);
-
-    } else if (m_high) {
-        description_str = (!negated)
-            ? UserString("DESC_TURN_MAX_ONLY")
-            : UserString("DESC_TURN_MAX_ONLY_NOT");
-        return str(FlexibleFormat(description_str)
-                   % high_str);
-
-    } else {
+    if (m_low && m_high)
+    {
+        return str(boost::format((!negated)
+            ? " on turns between %1% and %2%"
+            : " except between turns %1% and %2%")
+                % low_str
+                % high_str);
+    }
+    else if (m_low)
+    {
+        return str(boost::format((!negated)
+            ? " starting on turn %1%"
+            : " before turn %1%")
+                % low_str);
+    }
+    else if (m_high)
+    {
+        return str(boost::format((!negated)
+            ? " until turn %1%"
+            : " after turn %1%")
+                % high_str);
+    }
+    else
+    {
         return (!negated)
-            ? UserString("DESC_TURN_ANY")
-            : UserString("DESC_TURN_ANY_NOT");
+            ? " on any turn"
+            : " on no turn";
     }
 }
 
@@ -946,12 +944,11 @@ std::string SortedNumberOf::Description(bool negated/* = false*/) const {
     std::string number_str = m_number->ConstantExpr() ? m_number->Dump() : m_number->Description();
 
     if (m_sorting_method == SORT_RANDOM) {
-        return str(FlexibleFormat((!negated)
-                                  ? UserString("DESC_NUMBER_OF")
-                                  : UserString("DESC_NUMBER_OF_NOT")
-                                 )
-                   % number_str
-                   % m_condition->Description());
+        return str(boost::format((!negated)
+            ? " that is one of %1% randomly selected objects%2%"
+            : " that is not one of %1% randomly selected objects%2%")
+                % number_str
+                % m_condition->Description());
     } else {
         std::string sort_key_str = m_sort_key->ConstantExpr() ? m_sort_key->Dump() : m_sort_key->Description();
 
@@ -959,20 +956,20 @@ std::string SortedNumberOf::Description(bool negated/* = false*/) const {
         switch (m_sorting_method) {
         case SORT_MAX:
             description_str = (!negated)
-                ? UserString("DESC_MAX_NUMBER_OF")
-                : UserString("DESC_MAX_NUMBER_OF_NOT");
+                ? " that is one of %1% objects with the largest value of%2% and%3%"
+                : " that is not one of %1% objects with the largest value of%2% and%3%";
             break;
 
         case SORT_MIN:
             description_str = (!negated)
-                ? UserString("DESC_MIN_NUMBER_OF")
-                : UserString("DESC_MIN_NUMBER_OF_NOT");
+                ? " that is one of %1% objects with the smallest value of%2% and%3%"
+                : " that is not one of %1% objects with the smallest value of%2% and%3%";
             break;
 
         case SORT_MODE:
             description_str = (!negated)
-                ? UserString("DESC_MODE_NUMBER_OF")
-                : UserString("DESC_MODE_NUMBER_OF_NOT");
+                ? " that is one of %1% objects with the most common value of%2% and%3%"
+                : " that is not one of %1% objects with the most common value of%2% and%3%";
             break;
         default:
             break;
@@ -1064,8 +1061,8 @@ bool All::operator==(const ConditionBase& rhs) const
 
 std::string All::Description(bool negated/* = false*/) const {
     return (!negated)
-        ? UserString("DESC_ALL")
-        : UserString("DESC_ALL_NOT");
+        ? " in the universe"
+        : " not in the universe";
 }
 
 std::string All::Dump(unsigned short ntabs) const
@@ -1100,8 +1097,8 @@ bool None::operator==(const ConditionBase& rhs) const
 
 std::string None::Description(bool negated/* = false*/) const {
     return (!negated)
-        ? UserString("DESC_NONE")
-        : UserString("DESC_NONE_NOT");
+        ? " not in the universe"
+        : " in the universe";
 }
 
 std::string None::Dump(unsigned short ntabs) const
@@ -1261,23 +1258,21 @@ std::string EmpireAffiliation::Description(bool negated/* = false*/) const {
     }
 
     if (m_affiliation == AFFIL_SELF) {
-        return str(FlexibleFormat((!negated)
-            ? UserString("DESC_EMPIRE_AFFILIATION_SELF")
-            : UserString("DESC_EMPIRE_AFFILIATION_SELF_NOT")) % empire_str);
-    } else if (m_affiliation == AFFIL_ANY) {
-        return (!negated)
-            ? UserString("DESC_EMPIRE_AFFILIATION_ANY")
-            : UserString("DESC_EMPIRE_AFFILIATION_ANY_NOT");
-    } else if (m_affiliation == AFFIL_NONE) {
-        return (!negated)
-            ? UserString("DESC_EMPIRE_AFFILIATION_ANY_NOT")
-            : UserString("DESC_EMPIRE_AFFILIATION_ANY");
-    } else {
-        return str(FlexibleFormat((!negated)
-            ? UserString("DESC_EMPIRE_AFFILIATION")
-            : UserString("DESC_EMPIRE_AFFILIATION_NOT"))
-                   % UserString(boost::lexical_cast<std::string>(m_affiliation))
-                   % empire_str);
+        return str(boost::format((!negated)
+            ? " that belongs to %1% empire"
+            : " that does not belong to %1% empire") % empire_str);
+    } else if (m_affiliation == AFFIL_ANY && !negated
+             || m_affiliation == AFFIL_NONE && negated)
+        return " that belongs to any empire";
+    else if (m_affiliation == AFFIL_ANY && negated
+             || m_affiliation == AFFIL_NONE && !negated)
+        return " that does not belong to an empire";
+    else {
+        return str(boost::format((!negated)
+            ? " that belongs to an %1% of %2% empire"
+            : " that does not belong to an %1% of %2% empire")
+                % UserString(boost::lexical_cast<std::string>(m_affiliation))
+                % empire_str);
     }
 }
 
@@ -1354,8 +1349,8 @@ bool Source::operator==(const ConditionBase& rhs) const
 
 std::string Source::Description(bool negated/* = false*/) const {
     return (!negated)
-        ? UserString("DESC_SOURCE")
-        : UserString("DESC_SOURCE_NOT");
+        ? " that is the source object"
+        : " that is not the source object";
 }
 
 std::string Source::Dump(unsigned short ntabs) const
@@ -1392,8 +1387,8 @@ bool RootCandidate::operator==(const ConditionBase& rhs) const
 
 std::string RootCandidate::Description(bool negated/* = false*/) const {
     return (!negated)
-        ? UserString("DESC_ROOT_CANDIDATE")
-        : UserString("DESC_ROOT_CANDIDATE_NOT");
+        ? " that is the root candidate object"
+        : " that is not the root candidate object";
 }
 
 std::string RootCandidate::Dump(unsigned short ntabs) const
@@ -1422,8 +1417,8 @@ bool Target::operator==(const ConditionBase& rhs) const
 
 std::string Target::Description(bool negated/* = false*/) const {
     return (!negated)
-        ? UserString("DESC_TARGET")
-        : UserString("DESC_TARGET_NOT");
+        ? " that is the target object"
+        : " that is not the target object";
 }
 
 std::string Target::Dump(unsigned short ntabs) const
@@ -1593,14 +1588,14 @@ std::string Homeworld::Description(bool negated/* = false*/) const {
             values_str += ", ";
         } else if (i == m_names.size() - 2) {
             values_str += m_names.size() < 3 ? " " : ", ";
-            values_str += UserString("OR");
+            values_str += "or";
             values_str += " ";
         }
     }
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_HOMEWORLD")
-        : UserString("DESC_HOMEWORLD_NOT"))
-        % values_str);
+    return str(boost::format((!negated)
+        ? " that is a homeworld of species %1%"
+        : " that is not a homeworld of species %1%")
+            % values_str);
 }
 
 std::string Homeworld::Dump(unsigned short ntabs) const {
@@ -1690,8 +1685,8 @@ bool Capital::operator==(const ConditionBase& rhs) const
 
 std::string Capital::Description(bool negated/* = false*/) const {
     return (!negated)
-        ? UserString("DESC_CAPITAL")
-        : UserString("DESC_CAPITAL_NOT");
+        ? " that is an empire's capital planet"
+        : " that is not an empire's capital planet";
 }
 
 std::string Capital::Dump(unsigned short ntabs) const
@@ -1734,8 +1729,8 @@ bool Monster::operator==(const ConditionBase& rhs) const
 
 std::string Monster::Description(bool negated/* = false*/) const {
     return (!negated)
-        ? UserString("DESC_MONSTER")
-        : UserString("DESC_MONSTER_NOT");
+        ? " that is a space monster"
+        : " that is not a space monster";
 }
 
 std::string Monster::Dump(unsigned short ntabs) const
@@ -1776,8 +1771,8 @@ bool Armed::operator==(const ConditionBase& rhs) const
 
 std::string Armed::Description(bool negated/* = false*/) const {
     return (!negated)
-        ? UserString("DESC_ARMED")
-        : UserString("DESC_ARMED_NOT");
+        ? " that is an armed ship"
+        : " that is not an armed ship";
 }
 
 std::string Armed::Dump(unsigned short ntabs) const
@@ -1891,10 +1886,10 @@ std::string Type::Description(bool negated/* = false*/) const {
     std::string value_str = m_type->ConstantExpr() ?
                                 UserString(boost::lexical_cast<std::string>(m_type->Eval())) :
                                 m_type->Description();
-    return str(FlexibleFormat((!negated)
-           ? UserString("DESC_TYPE")
-           : UserString("DESC_TYPE_NOT"))
-           % value_str);
+    return str(boost::format((!negated)
+        ? " that is a %1%"
+        : " that is not a %1%")
+            % value_str);
 }
 
 std::string Type::Dump(unsigned short ntabs) const {
@@ -2105,14 +2100,14 @@ std::string Building::Description(bool negated/* = false*/) const {
             values_str += ", ";
         } else if (i == m_names.size() - 2) {
             values_str += m_names.size() < 3 ? " " : ", ";
-            values_str += UserString("OR");
+            values_str += "or";
             values_str += " ";
         }
     }
-    return str(FlexibleFormat((!negated)
-           ? UserString("DESC_BUILDING")
-           : UserString("DESC_BUILDING_NOT"))
-           % values_str);
+    return str(boost::format((!negated)
+        ? " that is a %1% building"
+        : " that is not a %1% building")
+            % values_str);
 }
 
 std::string Building::Dump(unsigned short ntabs) const {
@@ -2346,9 +2341,9 @@ std::string HasSpecial::Description(bool negated/* = false*/) const {
         if (m_since_turn_high)
             high_str = m_since_turn_high->Description();
 
-        return str(FlexibleFormat((!negated)
-            ? UserString("DESC_SPECIAL_TURN_RANGE")
-            : UserString("DESC_SPECIAL_TURN_RANGE_NOT"))
+        return str(boost::format((!negated)
+            ? " that has had a %1% special since between turns %2% and %3%"
+            : " that has not had a %1% special since between turns %2% and %3%")
                 % name_str
                 % low_str
                 % high_str);
@@ -2364,18 +2359,18 @@ std::string HasSpecial::Description(bool negated/* = false*/) const {
         if (m_capacity_high)
             high_str = m_capacity_high->Description();
 
-        return str(FlexibleFormat((!negated)
-            ? UserString("DESC_SPECIAL_CAPACITY_RANGE")
-            : UserString("DESC_SPECIAL_CAPACITY_RANGE_NOT"))
+        return str(boost::format((!negated)
+            ? " that has a %1% special with capacity between %2% and %3%"
+            : " that doesn't have a %1% special with capacity between %2% and %3%")
                 % name_str
                 % low_str
                 % high_str);
     }
 
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_SPECIAL")
-        : UserString("DESC_SPECIAL_NOT"))
-                % name_str);
+    return str(boost::format((!negated)
+        ? " that has a %1% special"
+        : " that doesn't have a %1% special")
+            % name_str);
 }
 
 std::string HasSpecial::Dump(unsigned short ntabs) const {
@@ -2535,10 +2530,10 @@ std::string HasTag::Description(bool negated/* = false*/) const {
         if (m_name->ConstantExpr() && UserStringExists(name_str))
             name_str = UserString(name_str);
     }
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_HAS_TAG")
-        : UserString("DESC_HAS_TAG_NOT"))
-        % name_str);
+    return str(boost::format((!negated)
+        ? " that is %1%"
+        : " that is not %1%")
+            % name_str);
 }
 
 std::string HasTag::Dump(unsigned short ntabs) const {
@@ -2658,11 +2653,11 @@ std::string CreatedOnTurn::Description(bool negated/* = false*/) const {
                                       std::to_string(m_high->Eval()) :
                                       m_high->Description())
                                    : std::to_string(IMPOSSIBLY_LARGE_TURN));
-    return str(FlexibleFormat((!negated)
-            ? UserString("DESC_CREATED_ON_TURN")
-            : UserString("DESC_CREATED_ON_TURN_NOT"))
-               % low_str
-               % high_str);
+    return str(boost::format((!negated)
+        ? " that was created between turns %1% and %2%"
+        : " that was not created between turns %1% and %2%")
+            % low_str
+            % high_str);
 }
 
 std::string CreatedOnTurn::Dump(unsigned short ntabs) const {
@@ -2849,10 +2844,10 @@ bool Contains::SourceInvariant() const
 { return m_condition->SourceInvariant(); }
 
 std::string Contains::Description(bool negated/* = false*/) const {
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_CONTAINS")
-        : UserString("DESC_CONTAINS_NOT"))
-        % m_condition->Description());
+    return str(boost::format((!negated)
+        ? " that contains an object%1%"
+        : " that doesn't contain an object%1%")
+            % m_condition->Description());
 }
 
 std::string Contains::Dump(unsigned short ntabs) const {
@@ -3063,10 +3058,10 @@ bool ContainedBy::SourceInvariant() const
 { return m_condition->SourceInvariant(); }
 
 std::string ContainedBy::Description(bool negated/* = false*/) const {
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_CONTAINED_BY")
-        : UserString("DESC_CONTAINED_BY_NOT"))
-        % m_condition->Description());
+    return str(boost::format((!negated)
+        ? " that is contained by an object%1%"
+        : " that is not contained by an object%1%")
+            % m_condition->Description());
 }
 
 std::string ContainedBy::Dump(unsigned short ntabs) const {
@@ -3203,12 +3198,12 @@ std::string InSystem::Description(bool negated/* = false*/) const {
     std::string description_str;
     if (!system_str.empty())
         description_str = (!negated)
-            ? UserString("DESC_IN_SYSTEM")
-            : UserString("DESC_IN_SYSTEM_NOT");
+            ? " that is in the system with id %1%"
+            : " that is not in the system with id %1%";
     else
         description_str = (!negated)
-            ? UserString("DESC_IN_SYSTEM_SIMPLE")
-            : UserString("DESC_IN_SYSTEM_SIMPLE_NOT");
+            ? " that is in a system"
+            : " that is not in a system";
 
     return str(FlexibleFormat(description_str) % system_str);
 }
@@ -3358,10 +3353,10 @@ std::string ObjectID::Description(bool negated/* = false*/) const {
     else
         object_str = UserString("ERROR");   // should always have a valid ID for this condition
 
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_OBJECT_ID")
-        : UserString("DESC_OBJECT_ID_NOT"))
-               % object_str);
+    return str(boost::format((!negated)
+        ? " that is the object with id %1%"
+        : " that is not the object with id %1%")
+            % object_str);
 }
 
 std::string ObjectID::Dump(unsigned short ntabs) const
@@ -3533,14 +3528,14 @@ std::string PlanetType::Description(bool negated/* = false*/) const {
             values_str += ", ";
         } else if (i == m_types.size() - 2) {
             values_str += m_types.size() < 3 ? " " : ", ";
-            values_str += UserString("OR");
+            values_str += "or";
             values_str += " ";
         }
     }
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_PLANET_TYPE")
-        : UserString("DESC_PLANET_TYPE_NOT"))
-        % values_str);
+    return str(boost::format((!negated)
+        ? " that is a %1% planet"
+        : " that is not a %1% planet")
+            % values_str);
 }
 
 std::string PlanetType::Dump(unsigned short ntabs) const {
@@ -3720,14 +3715,14 @@ std::string PlanetSize::Description(bool negated/* = false*/) const {
             values_str += ", ";
         } else if (i == m_sizes.size() - 2) {
             values_str += m_sizes.size() < 3 ? " " : ", ";
-            values_str += UserString("OR");
+            values_str += "or";
             values_str += " ";
         }
     }
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_PLANET_SIZE")
-        : UserString("DESC_PLANET_SIZE_NOT"))
-        % values_str);
+    return str(boost::format((!negated)
+        ? " that is a %1% planet"
+        : " that is not a %1% planet")
+            % values_str);
 }
 
 std::string PlanetSize::Dump(unsigned short ntabs) const {
@@ -3924,7 +3919,7 @@ std::string PlanetEnvironment::Description(bool negated/* = false*/) const {
             values_str += ", ";
         } else if (i == m_environments.size() - 2) {
             values_str += m_environments.size() < 3 ? " " : ", ";
-            values_str += UserString("OR");
+            values_str += "or";
             values_str += " ";
         }
     }
@@ -3935,12 +3930,12 @@ std::string PlanetEnvironment::Description(bool negated/* = false*/) const {
             species_str = UserString(species_str);
     }
     if (species_str.empty())
-        species_str = UserString("DESC_PLANET_ENVIRONMENT_CUR_SPECIES");
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_PLANET_ENVIRONMENT")
-        : UserString("DESC_PLANET_ENVIRONMENT_NOT"))
-        % values_str
-        % species_str);
+        species_str = "that it currently has";
+    return str(boost::format((!negated)
+        ? " that is a %1% planet for the species %2%"
+        : " that is not a %1% planet for the species %2%")
+            % values_str
+            % species_str);
 }
 
 std::string PlanetEnvironment::Dump(unsigned short ntabs) const {
@@ -4146,14 +4141,14 @@ std::string Species::Description(bool negated/* = false*/) const {
             values_str += ", ";
         } else if (i == m_names.size() - 2) {
             values_str += m_names.size() < 3 ? " " : ", ";
-            values_str += UserString("OR");
+            values_str += "or";
             values_str += " ";
         }
     }
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_SPECIES")
-        : UserString("DESC_SPECIES_NOT"))
-        % values_str);
+    return str(boost::format((!negated)
+        ? " that has species %1%"
+        : " that does not contain species %1%")
+            % values_str);
 }
 
 std::string Species::Dump(unsigned short ntabs) const {
@@ -4476,16 +4471,16 @@ std::string Enqueued::Description(bool negated/* = false*/) const {
     std::string description_str;
     switch (m_build_type) {
     case BT_BUILDING:   description_str = (!negated)
-                            ? UserString("DESC_ENQUEUED_BUILDING")
-                            : UserString("DESC_ENQUEUED_BUILDING_NOT");
+                            ? " where empire %1% has between %2% and %3% %4% buildings on the production queue"
+                            : " where empire %1% does not have between %2% and %3% %4% buildings on the production queue";
     break;
     case BT_SHIP:       description_str = (!negated)
-                            ? UserString("DESC_ENQUEUED_DESIGN")
-                            : UserString("DESC_ENQUEUED_DESIGN_NOT");
+                            ? " where empire %1% has between %2% and %3% %4% ships on the production queue"
+                            : " where empire %1% does not have between %2% and %3% %4% ships on the production queue";
     break;
     default:            description_str = (!negated)
-                            ? UserString("DESC_ENQUEUED")
-                            : UserString("DESC_ENQUEUED_NOT");
+                            ? " where empire %1% has between %2% and %3% things on the production queue"
+                            : " where empire %1% does not have between %2% and %3% things on the production queue";
     break;
     }
     return str(FlexibleFormat(description_str)
@@ -4682,14 +4677,14 @@ std::string FocusType::Description(bool negated/* = false*/) const {
             values_str += ", ";
         } else if (i == m_names.size() - 2) {
             values_str += m_names.size() < 3 ? " " : ", ";
-            values_str += UserString("OR");
+            values_str += "or";
             values_str += " ";
         }
     }
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_FOCUS_TYPE")
-        : UserString("DESC_FOCUS_TYPE_NOT"))
-        % values_str);
+    return str(boost::format((!negated)
+        ? " that has focus %1%"
+        : " that does not have focus %1%")
+            % values_str);
 }
 
 std::string FocusType::Dump(unsigned short ntabs) const {
@@ -4861,14 +4856,14 @@ std::string StarType::Description(bool negated/* = false*/) const {
             values_str += ", ";
         } else if (i == m_types.size() - 2) {
             values_str += m_types.size() < 3 ? " " : ", ";
-            values_str += UserString("OR");
+            values_str += "or";
             values_str += " ";
         }
     }
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_STAR_TYPE")
-        : UserString("DESC_STAR_TYPE_NOT"))
-        % values_str);
+    return str(boost::format((!negated)
+        ? " that is a system with a %1% star"
+        : " that is not a system with a %1% star")
+            % values_str);
 }
 
 std::string StarType::Dump(unsigned short ntabs) const {
@@ -5000,10 +4995,10 @@ std::string DesignHasHull::Description(bool negated/* = false*/) const {
         if (m_name->ConstantExpr() && UserStringExists(name_str))
             name_str = UserString(name_str);
     }
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_DESIGN_HAS_HULL")
-        : UserString("DESC_DESIGN_HAS_HULL_NOT"))
-        % name_str);
+    return str(boost::format((!negated)
+        ? " that contains the hull %1%"
+        : " that does not contain the hull %1%")
+            % name_str);
 }
 
 std::string DesignHasHull::Dump(unsigned short ntabs) const {
@@ -5167,12 +5162,12 @@ std::string DesignHasPart::Description(bool negated/* = false*/) const {
         if (m_name->ConstantExpr() && UserStringExists(name_str))
             name_str = UserString(name_str);
     }
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_DESIGN_HAS_PART")
-        : UserString("DESC_DESIGN_HAS_PART_NOT"))
-        % low_str
-        % high_str
-        % name_str);
+    return str(boost::format((!negated)
+        ? " that contains between %1% and %2% of the %3% part"
+        : " that does not contain between %1% and %2% of the %3% part")
+            % low_str
+            % high_str
+            % name_str);
 }
 
 std::string DesignHasPart::Dump(unsigned short ntabs) const {
@@ -5337,12 +5332,12 @@ std::string DesignHasPartClass::Description(bool negated/* = false*/) const {
                     std::to_string(m_high->Eval()) :
                     m_high->Description();
     }
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_DESIGN_HAS_PART_CLASS")
-        : UserString("DESC_DESIGN_HAS_PART_CLASS_NOT"))
-               % low_str
-               % high_str
-               % UserString(boost::lexical_cast<std::string>(m_class)));
+    return str(boost::format((!negated)
+        ? " that has a part of class %1%"
+        : " that does not have a part of class %1%")
+            % low_str
+            % high_str
+            % UserString(boost::lexical_cast<std::string>(m_class)));
 }
 
 std::string DesignHasPartClass::Dump(unsigned short ntabs) const {
@@ -5495,10 +5490,10 @@ std::string PredefinedShipDesign::Description(bool negated/* = false*/) const {
         if (m_name->ConstantExpr() && UserStringExists(name_str))
             name_str = UserString(name_str);
     }
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_PREDEFINED_SHIP_DESIGN")
-        : UserString("DESC_PREDEFINED_SHIP_DESIGN_NOT"))
-        % name_str);
+    return str(boost::format((!negated)
+        ? " that is of the design %1%"
+        : " that is not of the design %1%")
+            % name_str);
 }
 
 std::string PredefinedShipDesign::Dump(unsigned short ntabs) const {
@@ -5612,10 +5607,10 @@ std::string NumberedShipDesign::Description(bool negated/* = false*/) const {
                             std::to_string(m_design_id->Eval()) :
                             m_design_id->Description();
 
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_NUMBERED_SHIP_DESIGN")
-        : UserString("DESC_NUMBERED_SHIP_DESIGN_NOT"))
-               % id_str);
+    return str(boost::format((!negated)
+        ? " that is of the design %1%"
+        : " that is not of the design %1%")
+            % id_str);
 }
 
 std::string NumberedShipDesign::Dump(unsigned short ntabs) const
@@ -5726,10 +5721,10 @@ std::string ProducedByEmpire::Description(bool negated/* = false*/) const {
             empire_str = m_empire_id->Description();
     }
 
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_PRODUCED_BY_EMPIRE")
-        : UserString("DESC_PRODUCED_BY_EMPIRE_NOT"))
-               % empire_str);
+    return str(boost::format((!negated)
+        ? " that was produced by the %1% empire"
+        : " that was not produced by the %1% empire")
+            % empire_str);
 }
 
 std::string ProducedByEmpire::Dump(unsigned short ntabs) const
@@ -5824,15 +5819,15 @@ bool Chance::SourceInvariant() const
 std::string Chance::Description(bool negated/* = false*/) const {
     std::string value_str;
     if (m_chance->ConstantExpr()) {
-        return str(FlexibleFormat((!negated)
-            ? UserString("DESC_CHANCE_PERCENTAGE")
-            : UserString("DESC_CHANCE_PERCENTAGE_NOT"))
+        return str(boost::format((!negated)
+            ? " on a %1%%% chance"
+            : " on a (100 - %1%)%% chance")
                 % std::to_string(std::max(0.0, std::min(m_chance->Eval(), 1.0)) * 100));
     } else {
-        return str(FlexibleFormat((!negated)
-            ? UserString("DESC_CHANCE")
-            : UserString("DESC_CHANCE_NOT"))
-            % m_chance->Description());
+        return str(boost::format((!negated)
+            ? " with a probability of %1%"
+            : " with a probability of 1 - %1%")
+                % m_chance->Description());
     }
 }
 
@@ -5988,24 +5983,24 @@ std::string MeterValue::Description(bool negated/* = false*/) const {
                                    : std::to_string(Meter::LARGE_VALUE));
 
     if (m_low && !m_high) {
-        return str(FlexibleFormat((!negated) ?
-                                    UserString("DESC_METER_VALUE_CURRENT_MIN") :
-                                    UserString("DESC_METER_VALUE_CURRENT_MIN_NOT"))
-            % UserString(boost::lexical_cast<std::string>(m_meter))
-            % low_str);
+        return str(boost::format((!negated) ?
+            " that has %1% of at least %2%" :
+            " that has %1% more than %2%")
+                % UserString(boost::lexical_cast<std::string>(m_meter))
+                % low_str);
     } else if (m_high && !m_low) {
-        return str(FlexibleFormat((!negated) ?
-                                    UserString("DESC_METER_VALUE_CURRENT_MAX") :
-                                    UserString("DESC_METER_VALUE_CURRENT_MAX_NOT"))
-            % UserString(boost::lexical_cast<std::string>(m_meter))
-            % high_str);
+        return str(boost::format((!negated) ?
+            " that has %1% of at most %2%" :
+            " that has %1% less than %2%")
+                % UserString(boost::lexical_cast<std::string>(m_meter))
+                % high_str);
     } else {
-        return str(FlexibleFormat((!negated) ?
-                                    UserString("DESC_METER_VALUE_CURRENT") :
-                                    UserString("DESC_METER_VALUE_CURRENT_NOT"))
-            % UserString(boost::lexical_cast<std::string>(m_meter))
-            % low_str
-            % high_str);
+        return str(boost::format((!negated) ?
+            " that has %1% between %2% and %3%" :
+            " that doesn't have a %1% between %2% and %3%")
+                % UserString(boost::lexical_cast<std::string>(m_meter))
+                % low_str
+                % high_str);
     }
 }
 
@@ -6172,13 +6167,13 @@ std::string ShipPartMeterValue::Description(bool negated/* = false*/) const {
             part_str = UserString(part_str);
     }
 
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_SHIP_PART_METER_VALUE_CURRENT")
-        : UserString("DESC_SHIP_PART_METER_VALUE_CURRENT_NOT"))
-               % UserString(boost::lexical_cast<std::string>(m_meter))
-               % part_str
-               % low_str
-               % high_str);
+    return str(boost::format((!negated)
+        ? " that has %2% %1% between %3% and %4%"
+        : " that doesn't have %2% %1% between %3% and %4%")
+            % UserString(boost::lexical_cast<std::string>(m_meter))
+            % part_str
+            % low_str
+            % high_str);
 }
 
 std::string ShipPartMeterValue::Dump(unsigned short ntabs) const {
@@ -6360,13 +6355,13 @@ std::string EmpireMeterValue::Description(bool negated/* = false*/) const {
                                       std::to_string(m_high->Eval()) :
                                       m_high->Description())
                                    : std::to_string(Meter::LARGE_VALUE));
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_EMPIRE_METER_VALUE_CURRENT")
-        : UserString("DESC_EMPIRE_METER_VALUE_CURRENT_NOT"))
-               % UserString(m_meter)
-               % low_str
-               % high_str
-               % empire_str);
+    return str(boost::format((!negated)
+        ? " if empire %4% has %1% between %2% and %3%"
+        : " if empire %4% doesn't have %1% between %2% and %3%")
+            % UserString(m_meter)
+            % low_str
+            % high_str
+            % empire_str);
 }
 
 std::string EmpireMeterValue::Dump(unsigned short ntabs) const {
@@ -6515,12 +6510,12 @@ std::string EmpireStockpileValue::Description(bool negated/* = false*/) const {
     std::string high_str = m_high->ConstantExpr() ?
                             std::to_string(m_high->Eval()) :
                             m_high->Description();
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_EMPIRE_STOCKPILE_VALUE")
-        : UserString("DESC_EMPIRE_STOCKPILE_VALUE_NOT"))
-               % UserString(boost::lexical_cast<std::string>(m_stockpile))
-               % low_str
-               % high_str);
+    return str(boost::format((!negated)
+        ? " that belongs to an empire with %1% stockpile between %2% and %3%"
+        : " that doesn't belong to an empire with %1% stockpile between %2% and %3%")
+            % UserString(boost::lexical_cast<std::string>(m_stockpile))
+            % low_str
+            % high_str);
 }
 
 std::string EmpireStockpileValue::Dump(unsigned short ntabs) const {
@@ -6644,10 +6639,10 @@ std::string OwnerHasTech::Description(bool negated/* = false*/) const {
         if (m_name->ConstantExpr() && UserStringExists(name_str))
             name_str = UserString(name_str);
     }
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_OWNER_HAS_TECH")
-        : UserString("DESC_OWNER_HAS_TECH_NOT"))
-        % name_str);
+    return str(boost::format((!negated)
+        ? " that belongs to an empire that has the tech %1%"
+        : " that does not belong to an empire that has the tech %1%")
+            % name_str);
 }
 
 std::string OwnerHasTech::Dump(unsigned short ntabs) const {
@@ -6762,11 +6757,9 @@ bool OwnerHasBuildingTypeAvailable::SourceInvariant() const
 { return !m_name || m_name->SourceInvariant(); }
 
 std::string OwnerHasBuildingTypeAvailable::Description(bool negated/* = false*/) const {
-    // used internally for a tooltip where context is apparent, so don't need
-    // to name builing type here
     return (!negated)
-        ? UserString("DESC_OWNER_HAS_BUILDING_TYPE")
-        : UserString("DESC_OWNER_HAS_BUILDING_TYPE_NOT");
+        ? " building unlocked for empire"
+        : " building not unlocked for empire";
 }
 
 std::string OwnerHasBuildingTypeAvailable::Dump(unsigned short ntabs) const {
@@ -6881,11 +6874,9 @@ bool OwnerHasShipDesignAvailable::SourceInvariant() const
 { return !m_id || m_id->SourceInvariant(); }
 
 std::string OwnerHasShipDesignAvailable::Description(bool negated/* = false*/) const {
-    // used internally for a tooltip where context is apparent, so don't need
-    // to specify design here
     return (!negated)
-        ? UserString("DESC_OWNER_HAS_SHIP_DESIGN")
-        : UserString("DESC_OWNER_HAS_SHIP_DESIGN_NOT");
+        ? " ship design unlocked for empire"
+        : " ship design not unlocked for empire";
 }
 
 std::string OwnerHasShipDesignAvailable::Dump(unsigned short ntabs) const {
@@ -7118,10 +7109,10 @@ std::string VisibleToEmpire::Description(bool negated/* = false*/) const {
             empire_str = m_empire_id->Description();
     }
 
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_VISIBLE_TO_EMPIRE")
-        : UserString("DESC_VISIBLE_TO_EMPIRE_NOT"))
-               % empire_str);
+    return str(boost::format((!negated)
+        ? " that is visible to the %1% empire"
+        : " that is not visible to the %1% empire")
+            % empire_str);
 }
 
 std::string VisibleToEmpire::Dump(unsigned short ntabs) const
@@ -7241,11 +7232,11 @@ std::string WithinDistance::Description(bool negated/* = false*/) const {
     std::string value_str = m_distance->ConstantExpr() ?
                                 std::to_string(m_distance->Eval()) :
                                 m_distance->Description();
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_WITHIN_DISTANCE")
-        : UserString("DESC_WITHIN_DISTANCE_NOT"))
-               % value_str
-               % m_condition->Description());
+    return str(boost::format((!negated)
+        ? " that is within %1% of any object%2%"
+        : " that is not within %1% of any object%2%")
+            % value_str
+            % m_condition->Description());
 }
 
 std::string WithinDistance::Dump(unsigned short ntabs) const {
@@ -7348,11 +7339,11 @@ bool WithinStarlaneJumps::SourceInvariant() const
 
 std::string WithinStarlaneJumps::Description(bool negated/* = false*/) const {
     std::string value_str = m_jumps->ConstantExpr() ? std::to_string(m_jumps->Eval()) : m_jumps->Description();
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_WITHIN_STARLANE_JUMPS")
-        : UserString("DESC_WITHIN_STARLANE_JUMPS_NOT"))
-               % value_str
-               % m_condition->Description());
+    return str(boost::format((!negated)
+        ? " that is within %1% starlane jumps of any object%2%"
+        : " that is not within %1% starlane jumps of any object%2%")
+            % value_str
+            % m_condition->Description());
 }
 
 std::string WithinStarlaneJumps::Dump(unsigned short ntabs) const {
@@ -7807,9 +7798,10 @@ bool CanAddStarlaneConnection::SourceInvariant() const
 { return m_condition->SourceInvariant(); }
 
 std::string CanAddStarlaneConnection::Description(bool negated/* = false*/) const {
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_CAN_ADD_STARLANE_CONNECTION") : UserString("DESC_CAN_ADD_STARLANE_CONNECTION_NOT"))
-        % m_condition->Description());
+    return str(boost::format((!negated)
+        ? " that can have starlanes added connecting to all systems that contain objects%1%"
+        : " that can not have starlanes added connecting to all systems that contain objects%1%")
+            % m_condition->Description());
 }
 
 std::string CanAddStarlaneConnection::Dump(unsigned short ntabs) const {
@@ -7927,10 +7919,10 @@ std::string ExploredByEmpire::Description(bool negated/* = false*/) const {
             empire_str = m_empire_id->Description();
     }
 
-    return str(FlexibleFormat((!negated)
-               ? UserString("DESC_EXPLORED_BY_EMPIRE")
-               : UserString("DESC_EXPLORED_BY_EMPIRE_NOT"))
-               % empire_str);
+    return str(boost::format((!negated)
+        ? " that has been explored by the %1% empire"
+        : " that has not been explored by the %1% empire")
+            % empire_str);
 }
 
 std::string ExploredByEmpire::Dump(unsigned short ntabs) const
@@ -7969,8 +7961,8 @@ bool Stationary::operator==(const ConditionBase& rhs) const
 
 std::string Stationary::Description(bool negated/* = false*/) const {
     return (!negated)
-        ? UserString("DESC_STATIONARY")
-        : UserString("DESC_STATIONARY_NOT");
+        ? " that is stationary"
+        : " that is moving";
 }
 
 std::string Stationary::Dump(unsigned short ntabs) const
@@ -8023,12 +8015,12 @@ bool Aggressive::operator==(const ConditionBase& rhs) const
 std::string Aggressive::Description(bool negated/* = false*/) const {
     if (m_aggressive)
         return (!negated)
-            ? UserString("DESC_AGGRESSIVE")
-            : UserString("DESC_AGGRESSIVE_NOT");
+            ? " that is aggressive"
+            : " that is not aggressive";
     else
         return (!negated)
-            ? UserString("DESC_PASSIVE")
-            : UserString("DESC_PASSIVE_NOT");
+            ? " that is passive"
+            : " that is not passive";
 }
 
 std::string Aggressive::Dump(unsigned short ntabs) const
@@ -8151,10 +8143,10 @@ std::string FleetSupplyableByEmpire::Description(bool negated/* = false*/) const
             empire_str = m_empire_id->Description();
     }
 
-    return str(FlexibleFormat((!negated)
-               ? UserString("DESC_SUPPLY_CONNECTED_FLEET")
-               : UserString("DESC_SUPPLY_CONNECTED_FLEET_NOT"))
-               % empire_str);
+    return str(boost::format((!negated)
+        ? " that is in a system where the %1% empire can provide fleet supply"
+        : " that is not in a system where the %1% empire can provide fleet supply")
+            % empire_str);
 }
 
 std::string FleetSupplyableByEmpire::Dump(unsigned short ntabs) const
@@ -8313,11 +8305,11 @@ std::string ResourceSupplyConnectedByEmpire::Description(bool negated/* = false*
             empire_str = m_empire_id->Description();
     }
 
-    return str(FlexibleFormat((!negated)
-               ? UserString("DESC_SUPPLY_CONNECTED_RESOURCE")
-               : UserString("DESC_SUPPLY_CONNECTED_RESOURCE_NOT"))
-               % empire_str
-               % m_condition->Description());
+    return str(boost::format((!negated)
+        ? " that is resource connected for the %1% empire to an object%2%"
+        : " that is not resource connected for the %1% empire to an object%2%")
+            % empire_str
+            % m_condition->Description());
 }
 
 std::string ResourceSupplyConnectedByEmpire::Dump(unsigned short ntabs) const {
@@ -8352,9 +8344,9 @@ bool CanColonize::operator==(const ConditionBase& rhs) const
 { return ConditionBase::operator==(rhs); }
 
 std::string CanColonize::Description(bool negated/* = false*/) const {
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_CAN_COLONIZE")
-        : UserString("DESC_CAN_COLONIZE_NOT")));
+    return str(boost::format((!negated)
+        ? " with a species that can colonize"
+        : " without a species that can colonize"));
 }
 
 std::string CanColonize::Dump(unsigned short ntabs) const
@@ -8425,9 +8417,9 @@ bool CanProduceShips::operator==(const ConditionBase& rhs) const
 { return ConditionBase::operator==(rhs); }
 
 std::string CanProduceShips::Description(bool negated/* = false*/) const {
-    return str(FlexibleFormat((!negated)
-        ? UserString("DESC_CAN_PRODUCE_SHIPS")
-        : UserString("DESC_CAN_PRODUCE_SHIPS_NOT")));
+    return std::string((!negated)
+        ? " with a species that can produce ships"
+        : " without a species that can produce ships");
 }
 
 std::string CanProduceShips::Dump(unsigned short ntabs) const
@@ -8580,10 +8572,10 @@ std::string OrderedBombarded::Description(bool negated/* = false*/) const {
     if (m_by_object_condition)
         by_str = m_by_object_condition->Description();
 
-    return str(FlexibleFormat((!negated)
-               ? UserString("DESC_ORDERED_BOMBARDED")
-               : UserString("DESC_ORDERED_BOMBARDED_NOT"))
-               % by_str);
+    return str(boost::format((!negated)
+        ? " that is being bombarded by an object %1%"
+        : " that is not being bombarded by an object %1%")
+            % by_str);
 }
 
 std::string OrderedBombarded::Dump(unsigned short ntabs) const
@@ -8878,10 +8870,10 @@ std::string ValueTest::Description(bool negated/* = false*/) const {
     if (!value_str3.empty())
         composed_comparison += +" " + value_str3;
 
-    return str(FlexibleFormat((!negated)
-               ? UserString("DESC_VALUE_TEST")
-               : UserString("DESC_VALUE_TEST_NOT"))
-               % composed_comparison);
+    return str(boost::format((!negated)
+        ? " when %1%"
+        : " unless %1%")
+            % composed_comparison);
 }
 
 std::string ValueTest::Dump(unsigned short ntabs) const {
@@ -9352,7 +9344,7 @@ std::string And::Description(bool negated/* = false*/) const {
         for (unsigned int i = 0; i < m_operands.size(); ++i) {
             values_str += m_operands[i]->Description();
             if (i != m_operands.size() - 1) {
-                values_str += UserString("DESC_AND_BETWEEN_OPERANDS");
+                values_str += " and";
             }
         }
         return values_str;
@@ -9527,7 +9519,7 @@ std::string Or::Description(bool negated/* = false*/) const {
         for (unsigned int i = 0; i < m_operands.size(); ++i) {
             values_str += m_operands[i]->Description();
             if (i != m_operands.size() - 1) {
-                values_str += UserString("DESC_OR_BETWEEN_OPERANDS");
+                values_str += " or";
             }
         }
         return values_str;
