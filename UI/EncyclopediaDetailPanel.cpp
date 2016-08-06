@@ -58,7 +58,6 @@ namespace {
     const int DESCRIPTION_PADDING(3);
 
     void    AddOptions(OptionsDB& db) {
-        db.Add("resource.effects.description.shown", UserStringNop("OPTIONS_DB_DUMP_EFFECTS_GROUPS_DESC"), false, Validator<bool>());
         db.Add("ui.pedia.search.articles.enabled", UserStringNop("OPTIONS_DB_UI_ENC_SEARCH_ARTICLE"), true, Validator<bool>());
     }
     bool temp_bool = RegisterOptions(&AddOptions);
@@ -1316,13 +1315,6 @@ namespace {
             { detailed_description += LinkTaggedText(VarText::TECH_TAG, tech_name) + "  "; }
             detailed_description += "\n\n";
         }
-
-        if (GetOptionsDB().Get<bool>("resource.effects.description.shown")) {
-            if (part->Location())
-                detailed_description += "\n" + part->Location()->Dump();
-            if (!part->Effects().empty())
-                detailed_description += "\n" + Dump(part->Effects());
-        }
     }
 
     void RefreshDetailPanelShipHullTag(     const std::string& item_type, const std::string& item_name,
@@ -1374,13 +1366,6 @@ namespace {
             for (const auto& tech_name : unlocked_by_techs)
             { detailed_description += LinkTaggedText(VarText::TECH_TAG, tech_name) + "  "; }
             detailed_description += "\n\n";
-        }
-
-        if (GetOptionsDB().Get<bool>("resource.effects.description.shown")) {
-            if (hull->Location())
-                detailed_description += "\n" + hull->Location()->Dump();
-            if (!hull->Effects().empty())
-                detailed_description += "\n" + Dump(hull->Effects());
         }
     }
 
@@ -1454,10 +1439,6 @@ namespace {
 
         detailed_description += UserString(tech->Description());
 
-        if (GetOptionsDB().Get<bool>("resource.effects.description.shown") && !tech->Effects().empty()) {
-            detailed_description += "\n" + Dump(tech->Effects());
-        }
-
         const auto& unlocked_by_techs = tech->Prerequisites();
         if (!unlocked_by_techs.empty()) {
             detailed_description += "\n\n" + UserString("ENC_UNLOCKED_BY");
@@ -1505,20 +1486,6 @@ namespace {
                 detailed_description += str(FlexibleFormat(UserString("ENC_AUTO_TIME_COST_VARIABLE_DETAIL_STR")) 
                                         % local_name % local_cost % cost_units % local_time);
             }
-        }
-        if (GetOptionsDB().Get<bool>("resource.effects.description.shown")) {
-            if (!building_type->ProductionCostTimeLocationInvariant()) {
-                if (building_type->Cost() && !building_type->Cost()->ConstantExpr())
-                    detailed_description += "\n\nProduction Cost:\n" + building_type->Cost()->Dump();
-                if (building_type->Time() && !building_type->Time()->ConstantExpr())
-                    detailed_description += "\n\n Production Time:\n" + building_type->Time()->Dump();
-            }
-            if (building_type->EnqueueLocation())
-                detailed_description += "\n\nEnqueue Requirement:\n" + building_type->EnqueueLocation()->Dump();
-            if (building_type->Location())
-                detailed_description += "\n\nLocation Requirement:\n" + building_type->Location()->Dump();
-            if (!building_type->Effects().empty())
-                detailed_description += "\n\nEffects:\n" + Dump(building_type->Effects());
         }
 
         auto unlocked_by_techs = TechsThatUnlockItem(ItemSpec(UIT_BUILDING, item_name));
@@ -1578,13 +1545,6 @@ namespace {
                     detailed_description += obj->PublicName(client_empire_id) + "  ";
             }
             detailed_description += "\n";
-        }
-
-        if (GetOptionsDB().Get<bool>("resource.effects.description.shown")) {
-            if (special->Location())
-                detailed_description += "\n" + special->Location()->Dump();
-            if (!special->Effects().empty())
-                detailed_description += "\n" + Dump(special->Effects());
         }
     }
 
@@ -2005,10 +1965,6 @@ namespace {
             detailed_description += "\n";
         }
 
-        if (GetOptionsDB().Get<bool>("resource.effects.description.shown") && !species->Effects().empty()) {
-            detailed_description += "\n" + Dump(species->Effects());
-        }
-
         // Long description
         detailed_description += "\n";
         detailed_description += UserString(species->Description());
@@ -2102,11 +2058,6 @@ namespace {
         general_type = UserString("ENC_FIELD_TYPE");
 
         detailed_description += UserString(field_type->Description());
-
-        if (GetOptionsDB().Get<bool>("resource.effects.description.shown")) {
-            if (!field_type->Effects().empty())
-                detailed_description += "\n" + Dump(field_type->Effects());
-        }
     }
 
 

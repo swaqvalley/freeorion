@@ -1870,9 +1870,6 @@ Stores whether the OpenGL version of this system has been checked. If false, sev
 OPTIONS_DB_RESET_FSSIZE
 Stores whether to reset the stored fullscreen resolution. If false, the stored values are used, but if true, the values are reset to the max the rendering system supports.
 
-OPTIONS_DB_DUMP_EFFECTS_GROUPS_DESC
-Toggles dump of effects groups in tech, building or ship part descriptions.
-
 OPTIONS_DB_VERBOSE_SITREP_DESC
 Toggles inclusion of situation report messages with errors.
 

@@ -1081,9 +1081,6 @@ Beginnt ein neues Schnellstartspiel. Das Hauptmenü wird umgangen.
 OPTIONS_DB_RESET_FSSIZE
 Speichert ob der Vollbildmodus zu den gespeicherten Wert zurückgesetzt werden soll. Wenn nicht gesetzt, wird die gespeicherte Auflösung genutzt, ansonsten wird die höchste Auflösung genutzt, welche unterstützt wird.
 
-OPTIONS_DB_DUMP_EFFECTS_GROUPS_DESC
-Entscheidet ob ein Abbild der Effektgruppen in die Beschreibung von Technologien, Gebäuden und Schiffsteilen eingefügt werden.
-
 OPTIONS_DB_VERBOSE_LOGGING_DESC
 Schaltet die ausführliche Protokollierung der Inhalte des Universums und Effektberechnung.
 

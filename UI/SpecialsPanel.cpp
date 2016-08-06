@@ -95,10 +95,6 @@ void SpecialsPanel::Update() {
         else
             desc += "\n" + UserString("ADDED_ON_INITIAL_TURN");
 
-        if (GetOptionsDB().Get<bool>("resource.effects.description.shown") && !special->Effects().empty()) {
-            desc += "\n" + Dump(special->Effects());
-        }
-
         graphic->SetBrowseInfoWnd(GG::Wnd::Create<IconTextBrowseWnd>(
             ClientUI::SpecialIcon(special->Name()), UserString(special->Name()), desc));
         m_icons[entry.first] = graphic;

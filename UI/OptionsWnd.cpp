@@ -581,7 +581,6 @@ void OptionsWnd::CompleteConstruction() {
     BoolOption(current_page,   0, "ui.queue.production_location.shown", UserString("OPTIONS_UI_PROD_QUEUE_LOCATION"));
 
     CreateSectionHeader(current_page, 0,                                UserString("OPTIONS_DESCRIPTIONS"));
-    BoolOption(current_page,   0, "resource.effects.description.shown", UserString("OPTIONS_DUMP_EFFECTS_GROUPS_DESC"));
     BoolOption(current_page,   0, "ui.map.sitrep.invalid.shown",        UserString("OPTIONS_VERBOSE_SITREP_DESC"));
     BoolOption(current_page,   0, "ui.name.id.shown",                   UserString("OPTIONS_SHOW_IDS_AFTER_NAMES"));
 

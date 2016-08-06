@@ -291,20 +291,6 @@ unsigned int EffectsGroup::GetCheckSum() const {
 
 
 ///////////////////////////////////////////////////////////
-// Dump function                                         //
-///////////////////////////////////////////////////////////
-std::string Dump(const std::vector<std::shared_ptr<EffectsGroup>>& effects_groups) {
-    std::stringstream retval;
-
-    for (auto& effects_group : effects_groups) {
-        retval << "\n" << effects_group->Dump();
-    }
-
-    return retval.str();
-}
-
-
-///////////////////////////////////////////////////////////
 // EffectBase                                            //
 ///////////////////////////////////////////////////////////
 EffectBase::~EffectBase()

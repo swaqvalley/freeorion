@@ -1865,9 +1865,6 @@ Indique si la version d'OpenGL du système a été vérifiée. Si non, diverses 
 OPTIONS_DB_RESET_FSSIZE
 Enregistre ou réinitialise la résolution en plein écran. Si non, la valeur enregistrée est utilisée. Si oui, la valeur est réinitialisée à la résolution maximale que le système peut afficher.
 
-OPTIONS_DB_DUMP_EFFECTS_GROUPS_DESC
-Active/Désactive l'affichage des effets groupés dans les descriptions des technologies, des structures ou des équipements d'astronef.
-
 OPTIONS_DB_VERBOSE_SITREP_DESC
 Active/Désactive l'affichage des rapports d'erreurs (pour développeurs).
 

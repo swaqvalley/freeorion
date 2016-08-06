@@ -90,9 +90,6 @@ private:
     void serialize(Archive& ar, const unsigned int version);
 };
 
-/** Returns a single string which `Dump`s a vector of EffectsGroups. */
-FO_COMMON_API std::string Dump(const std::vector<std::shared_ptr<EffectsGroup>>& effects_groups);
-
 /** The base class for all Effects.  When an Effect is executed, the source
   * object (the object to which the Effect or its containing EffectGroup is
   * attached) and the target object are both required.  Note that this means
