@@ -30,6 +30,7 @@
 
 #include <GG/Control.h>
 #include <GG/GLClientAndServerBuffer.h>
+#include <GG/RangeModel.h>
 
 #include <boost/signals2/signal.hpp>
 
@@ -145,11 +146,8 @@ private:
 
     Clr                     m_int_color;    ///< color inside border of slide area
     const Orientation       m_orientation;  ///< vertical or horizontal scroll? (use enum for these declared above)
-    int                     m_posn;         ///< current position of tab in logical coords (will be in [m_range_min, m_range_max - m_page_sz])
-    int                     m_range_min;    ///< lowest value in range of scrollbar
-    int                     m_range_max;    ///< highest value "
+    RangeModel<int>         m_model;
     unsigned int            m_line_sz;      ///< logical units traversed in a line movement (such as a click on either end button)
-    unsigned int            m_page_sz;      ///< logical units traversed for a page movement (such as a click in non-tab middle area, or PgUp/PgDn)
     std::shared_ptr<Button>                 m_tab;          ///< the button representing the tab
     std::shared_ptr<Button>                 m_incr;         ///< the increase button (line down/line right)
     std::shared_ptr<Button>                 m_decr;         ///< the decrease button (line up/line left)

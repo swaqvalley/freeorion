@@ -63,6 +63,7 @@ target_sources(GiGi
         ${CMAKE_CURRENT_LIST_DIR}/MultiEditFwd.h
         ${CMAKE_CURRENT_LIST_DIR}/MultiEdit.h
         ${CMAKE_CURRENT_LIST_DIR}/PtRect.h
+        ${CMAKE_CURRENT_LIST_DIR}/RangeModel.h
         ${CMAKE_CURRENT_LIST_DIR}/Scroll.h
         ${CMAKE_CURRENT_LIST_DIR}/ScrollPanel.h
         ${CMAKE_CURRENT_LIST_DIR}/Slider.h

@@ -56,11 +56,8 @@ Scroll::Scroll(Orientation orientation, Clr color, Clr interior) :
     Control(X0, Y0, X1, Y1, INTERACTIVE | REPEAT_BUTTON_DOWN),
     m_int_color(interior),
     m_orientation(orientation),
-    m_posn(0),
-    m_range_min(0),
-    m_range_max(99),
+    m_model({0, 0, 99, 25}),
     m_line_sz(5),
-    m_page_sz(25),
     m_tab(nullptr),
     m_incr(nullptr),
     m_decr(nullptr),
@@ -122,16 +119,16 @@ Pt Scroll::MinUsableSize() const
 }
 
 std::pair<int, int> Scroll::PosnRange() const
-{ return std::pair<int, int>(m_posn, m_posn + m_page_sz); }
+{ return std::pair<int, int>(m_model.m_value, m_model.m_value + m_model.m_extent); }
 
 std::pair<int, int> Scroll::ScrollRange() const
-{ return std::pair<int, int>(m_range_min, m_range_max); }
+{ return std::pair<int, int>(m_model.m_minimum, m_model.m_maximum); }
 
 unsigned int Scroll::LineSize() const
 { return m_line_sz; }
 
 unsigned int Scroll::PageSize() const
-{ return m_page_sz; }
+{ return m_model.m_extent; }
 
 Clr Scroll::InteriorColor() const
 { return m_int_color; }
@@ -194,7 +191,7 @@ void Scroll::DoLayout()
                     (m_orientation == VERTICAL) ?
                     Pt(X(bn_width), m_tab->RelativeLowerRight().y) :
                     Pt(m_tab->RelativeLowerRight().x, Y(bn_width)));
-    SizeScroll(m_range_min, m_range_max, m_line_sz, m_page_sz); // update tab size and position
+    SizeScroll(m_model.m_minimum, m_model.m_maximum, m_line_sz, m_model.m_extent); // update tab size and position
 }
 
 void Scroll::Disable(bool b/* = true*/)
@@ -223,16 +220,16 @@ void Scroll::SetInteriorColor(Clr c)
 void Scroll::SizeScroll(int min, int max, unsigned int line, unsigned int page)
 {
     m_line_sz = line;
-    m_range_min = std::min(min, max);
-    m_range_max = std::max(min, max);
-    m_page_sz = page;
+    m_model.m_minimum = std::min(min, max);
+    m_model.m_maximum = std::max(min, max);
+    m_model.m_extent = page;
 
-    if (m_page_sz > static_cast<unsigned int>(m_range_max - m_range_min + 1))
-        m_page_sz = (m_range_max - m_range_min + 1);
-    if (m_posn > m_range_max - static_cast<int>(m_page_sz - 1))
-        m_posn = m_range_max - (m_page_sz - 1);
-    if (m_posn < m_range_min)
-        m_posn = m_range_min;
+    if (m_model.m_extent > static_cast<unsigned int>(m_model.m_maximum - m_model.m_minimum + 1))
+        m_model.m_extent = (m_model.m_maximum - m_model.m_minimum + 1);
+    if (m_model.m_value > m_model.m_maximum - static_cast<int>(m_model.m_extent - 1))
+        m_model.m_value = m_model.m_maximum - (m_model.m_extent - 1);
+    if (m_model.m_value < m_model.m_minimum)
+        m_model.m_value = m_model.m_minimum;
     Pt tab_ul = m_tab->RelativeUpperLeft();
     Pt tab_lr = m_orientation == VERTICAL ?
         Pt(m_tab->RelativeLowerRight().x, tab_ul.y + static_cast<int>(TabWidth())):
@@ -242,25 +239,25 @@ void Scroll::SizeScroll(int min, int max, unsigned int line, unsigned int page)
 }
 
 void Scroll::SetMax(int max)        
-{ SizeScroll(m_range_min, max, m_line_sz, m_page_sz); }
+{ SizeScroll(m_model.m_minimum, max, m_line_sz, m_model.m_extent); }
 
 void Scroll::SetMin(int min)        
-{ SizeScroll(min, m_range_max, m_line_sz, m_page_sz); }
+{ SizeScroll(min, m_model.m_maximum, m_line_sz, m_model.m_extent); }
 
 void Scroll::SetLineSize(unsigned int line)
-{ SizeScroll(m_range_min, m_range_max, line, m_page_sz); }
+{ SizeScroll(m_model.m_minimum, m_model.m_maximum, line, m_model.m_extent); }
 
 void Scroll::SetPageSize(unsigned int page)  
-{ SizeScroll(m_range_min, m_range_max, m_line_sz, page); }
+{ SizeScroll(m_model.m_minimum, m_model.m_maximum, m_line_sz, page); }
 
 void Scroll::ScrollTo(int p)
 {
-    if (p < m_range_min)
-        m_posn = m_range_min;
-    else if (p > static_cast<int>(m_range_max - m_page_sz))
-        m_posn = m_range_max - m_page_sz;
+    if (p < m_model.m_minimum)
+        m_model.m_value = m_model.m_minimum;
+    else if (p > static_cast<int>(m_model.m_maximum - m_model.m_extent))
+        m_model.m_value = m_model.m_maximum - m_model.m_extent;
     else
-        m_posn = p;
+        m_model.m_value = p;
     MoveTabToPosn();
 }
 
@@ -272,19 +269,19 @@ void Scroll::ScrollLineDecr(int lines)
 
 void Scroll::ScrollPageIncr()
 {
-    if (static_cast<int>(m_posn + m_page_sz) <= static_cast<int>(m_range_max - m_page_sz))
-        m_posn += m_page_sz;
+    if (static_cast<int>(m_model.m_value + m_model.m_extent) <= static_cast<int>(m_model.m_maximum - m_model.m_extent))
+        m_model.m_value += m_model.m_extent;
     else
-        m_posn = m_range_max - (m_page_sz - 1);
+        m_model.m_value = m_model.m_maximum - (m_model.m_extent - 1);
     MoveTabToPosn();
 }
 
 void Scroll::ScrollPageDecr()
 {
-    if (static_cast<int>(m_posn - m_page_sz) >= m_range_min)
-        m_posn -= m_page_sz;
+    if (static_cast<int>(m_model.m_value - m_model.m_extent) >= m_model.m_minimum)
+        m_model.m_value -= m_model.m_extent;
     else
-        m_posn = m_range_min;
+        m_model.m_value = m_model.m_minimum;
     MoveTabToPosn();
 }
 
@@ -297,7 +294,7 @@ unsigned int Scroll::TabSpace() const
 }
 
 unsigned int Scroll::TabWidth() const
-{ return std::max(static_cast<unsigned int>(TabSpace() / (m_range_max - m_range_min + 1.0) * m_page_sz + 0.5), MIN_TAB_SIZE); }
+{ return std::max(static_cast<unsigned int>(TabSpace() / (m_model.m_maximum - m_model.m_minimum + 1.0) * m_model.m_extent + 0.5), MIN_TAB_SIZE); }
 
 Scroll::ScrollRegion Scroll::RegionUnder(const Pt& pt)
 {
@@ -331,18 +328,18 @@ void Scroll::LButtonDown(const Pt& pt, Flags<ModKey> mod_keys)
             switch (m_depressed_region)
             {
             case SBR_PAGE_DN: {
-                int old_posn = m_posn;
+                int old_posn = m_model.m_value;
                 ScrollPageDecr();
-                if (old_posn != m_posn) {
-                    ScrolledSignal(m_posn, m_posn + m_page_sz, m_range_min, m_range_max);
+                if (old_posn != m_model.m_value) {
+                    ScrolledSignal(m_model.m_value, m_model.m_value + m_model.m_extent, m_model.m_minimum, m_model.m_maximum);
                 }
                 break;
             }
             case SBR_PAGE_UP: {
-                int old_posn = m_posn;
+                int old_posn = m_model.m_value;
                 ScrollPageIncr();
-                if (old_posn != m_posn) {
-                    ScrolledSignal(m_posn, m_posn + m_page_sz, m_range_min, m_range_max);
+                if (old_posn != m_model.m_value) {
+                    ScrolledSignal(m_model.m_value, m_model.m_value + m_model.m_extent, m_model.m_minimum, m_model.m_maximum);
                 }
                 break;
             }
@@ -399,7 +396,7 @@ bool Scroll::EventFilter(Wnd* w, const WndEvent& event)
         case WndEvent::LButtonUp:
         case WndEvent::LClick:
             if (m_tab_dragged)
-                ScrolledSignal(m_posn, m_posn + m_page_sz, m_range_min, m_range_max);
+                ScrolledSignal(m_model.m_value, m_model.m_value + m_model.m_extent, m_model.m_minimum, m_model.m_maximum);
             m_dragging_tab = false;
             m_tab_dragged = false;
             break;
@@ -414,16 +411,16 @@ bool Scroll::EventFilter(Wnd* w, const WndEvent& event)
 
 void Scroll::UpdatePosn()
 {
-    int old_posn = m_posn;
+    int old_posn = m_model.m_value;
     int before_tab = (m_orientation == VERTICAL ?   // the tabspace before the tab's lower-value side
                       Value(m_tab->RelativeUpperLeft().y - (m_decr ? m_decr->Size().y : Y0)) :
                       Value(m_tab->RelativeUpperLeft().x - (m_decr ? m_decr->Size().x : X0)));
     int tab_space = TabSpace() - (m_orientation == VERTICAL ? Value(m_tab->Size().y) : Value(m_tab->Size().x));
-    int max_posn = static_cast<int>(m_range_max - m_page_sz + 1);
-    m_posn = static_cast<int>(m_range_min + static_cast<double>(before_tab) / tab_space * (max_posn - m_range_min) + 0.5);
-    m_posn = std::max(m_range_min, std::min(m_posn, max_posn));
-    if (old_posn != m_posn)
-        ScrolledSignal(m_posn, m_posn + m_page_sz, m_range_min, m_range_max);
+    int max_posn = static_cast<int>(m_model.m_maximum - m_model.m_extent + 1);
+    m_model.m_value = static_cast<int>(m_model.m_minimum + static_cast<double>(before_tab) / tab_space * (max_posn - m_model.m_minimum) + 0.5);
+    m_model.m_value = std::max(m_model.m_minimum, std::min(m_model.m_value, max_posn));
+    if (old_posn != m_model.m_value)
+        ScrolledSignal(m_model.m_value, m_model.m_value + m_model.m_extent, m_model.m_minimum, m_model.m_maximum);
 }
 
 void Scroll::MoveTabToPosn()
@@ -434,10 +431,10 @@ void Scroll::MoveTabToPosn()
                           Value(m_decr->Size().y) :
                           Value(m_decr->Size().x));
     int tab_space = TabSpace() - (m_orientation == VERTICAL ? Value(m_tab->Size().y) : Value(m_tab->Size().x));
-    int max_posn = static_cast<int>(m_range_max - m_page_sz + 1);
+    int max_posn = static_cast<int>(m_model.m_maximum - m_model.m_extent + 1);
     double tab_location =
-        (m_posn - m_range_min) / static_cast<double>(max_posn - m_range_min) * tab_space + start_tabspace + 0.5;
-    if (m_decr && m_posn - m_range_min == 0)
+        (m_model.m_value - m_model.m_minimum) / static_cast<double>(max_posn - m_model.m_minimum) * tab_space + start_tabspace + 0.5;
+    if (m_decr && m_model.m_value - m_model.m_minimum == 0)
         tab_location = m_orientation == VERTICAL ? Value(m_decr->Height()) : Value(m_decr->Width());
 
     m_tab->MoveTo(m_orientation == VERTICAL ?
@@ -447,26 +444,26 @@ void Scroll::MoveTabToPosn()
 
 void Scroll::ScrollLineIncrDecrImpl(bool signal, int lines)
 {
-    int old_posn = m_posn;
+    int old_posn = m_model.m_value;
     int move = lines * m_line_sz;
 
     if (move == 0) {
         return;
     } else if (move > 0) {
-        if (static_cast<int>(m_posn + move) <= static_cast<int>(m_range_max - m_page_sz))
-            m_posn += move;
+        if (static_cast<int>(m_model.m_value + move) <= static_cast<int>(m_model.m_maximum - m_model.m_extent))
+            m_model.m_value += move;
         else
-            m_posn = m_range_max - m_page_sz;
+            m_model.m_value = m_model.m_maximum - m_model.m_extent;
     } else {
-        if (static_cast<int>(m_posn + move) >= m_range_min)
-            m_posn += move;
+        if (static_cast<int>(m_model.m_value + move) >= m_model.m_minimum)
+            m_model.m_value += move;
         else
-            m_posn = m_range_min;
+            m_model.m_value = m_model.m_minimum;
     }
 
     MoveTabToPosn();
-    if (signal && old_posn != m_posn) {
-        ScrolledSignal(m_posn, m_posn + m_page_sz, m_range_min, m_range_max);
+    if (signal && old_posn != m_model.m_value) {
+        ScrolledSignal(m_model.m_value, m_model.m_value + m_model.m_extent, m_model.m_minimum, m_model.m_maximum);
     }
 }
 

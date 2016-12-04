@@ -32,6 +32,7 @@
 
 #include <GG/Button.h>
 #include <GG/DrawUtil.h>
+#include <GG/RangeModel.h>
 #include <GG/StyleFactory.h>
 #include <GG/WndEvent.h>
 
@@ -132,10 +133,8 @@ private:
         std::string m_name;
     };
 
-    T                         m_posn;
-    T                         m_range_min;
-    T                         m_range_max;
-    T                         m_page_sz;
+    RangeModel<T>             m_model;
+
     Orientation               m_orientation;
     unsigned int              m_line_width;
     unsigned int              m_tab_width;
@@ -153,10 +152,7 @@ Slider<T>::Slider(T min, T max, Orientation orientation,
                   Clr color, int unsigned tab_width, int unsigned line_width/* = 5*/,
                   Flags<WndFlag> flags/* = INTERACTIVE*/) :
     Control(X0, Y0, X1, Y1, flags),
-    m_posn(min),
-    m_range_min(min),
-    m_range_max(max),
-    m_page_sz(INVALID_PAGE_SIZE),
+    m_model({min, min, max, INVALID_PAGE_SIZE}),
     m_orientation(orientation),
     m_line_width(line_width),
     m_tab_width(tab_width),
@@ -191,15 +187,15 @@ Pt Slider<T>::MinUsableSize() const
 
 template <class T>
 T Slider<T>::Posn() const
-{ return m_posn; }
+{ return m_model.value; }
 
 template <class T>
 std::pair<T, T> Slider<T>::SliderRange() const
-{ return std::pair<T, T>(m_range_min, m_range_max); }
+{ return std::pair<T, T>(m_model.m_minimum, m_model.m_maximum); }
 
 template <class T>
 T Slider<T>::PageSize() const
-{ return m_page_sz != INVALID_PAGE_SIZE ? m_page_sz : (m_range_max - m_range_min) / 10; }
+{ return m_model.m_extent != INVALID_PAGE_SIZE ? m_model.m_extent : (m_model.m_maximum - m_model.m_minimum) / 10; }
 
 template <class T>
 Orientation Slider<T>::GetOrientation() const
@@ -263,24 +259,24 @@ void Slider<T>::SetColor(Clr c)
 template <class T>
 void Slider<T>::SizeSlider(T min, T max)
 {
-    assert(m_range_min != m_range_max);
-    m_range_min = min;
-    m_range_max = max;
-    if (m_posn < m_range_min)
-        SlideToImpl(m_range_min, false);
-    else if (m_range_max < m_posn)
-        SlideToImpl(m_range_max, false);
+    assert(m_model.m_minimum != m_model.m_maximum);
+    m_model.m_minimum = min;
+    m_model.m_maximum = max;
+    if (m_model.m_value < m_model.m_minimum)
+        SlideToImpl(m_model.m_minimum, false);
+    else if (m_model.m_maximum < m_model.m_value)
+        SlideToImpl(m_model.m_maximum, false);
     else
         MoveTabToPosn();
 }
 
 template <class T>
 void Slider<T>::SetMax(T max)
-{ SizeSlider(m_range_min, max); }
+{ SizeSlider(m_model.m_minimum, max); }
 
 template <class T>
 void Slider<T>::SetMin(T min)
-{ SizeSlider(min, m_range_max); }
+{ SizeSlider(min, m_model.m_maximum); }
 
 template <class T>
 void Slider<T>::SlideTo(T p)
@@ -288,7 +284,7 @@ void Slider<T>::SlideTo(T p)
 
 template <class T>
 void Slider<T>::SetPageSize(T size)
-{ m_page_sz = size; }
+{ m_model.m_extent = size; }
 
 template <class T>
 Button* Slider<T>::Tab() const
@@ -311,12 +307,12 @@ T Slider<T>::PtToPosn(const Pt& pt) const
         pixel_nearest_to_pt_on_line = std::max(line_min, std::min(Value(pt.x - ul.x), line_max));
     }
     double fractional_distance = static_cast<double>(pixel_nearest_to_pt_on_line) / (line_max - line_min);
-    return m_range_min + static_cast<T>((m_range_max - m_range_min) * fractional_distance);
+    return m_model.m_minimum + static_cast<T>((m_model.m_maximum - m_model.m_minimum) * fractional_distance);
 }
 
 template <class T>
 void Slider<T>::LClick(const Pt& pt, Flags<ModKey> mod_keys)
-{ SlideToImpl(m_posn < PtToPosn(pt) ? m_posn + PageSize() : m_posn - PageSize(), true); }
+{ SlideToImpl(m_model.m_value < PtToPosn(pt) ? m_model.m_value + PageSize() : m_model.m_value - PageSize(), true); }
 
 template <class T>
 void Slider<T>::KeyPress(Key key, std::uint32_t key_code_point, Flags<ModKey> mod_keys)
@@ -324,34 +320,34 @@ void Slider<T>::KeyPress(Key key, std::uint32_t key_code_point, Flags<ModKey> mo
     if (!Disabled()) {
         switch (key) {
         case GGK_HOME:
-            SlideToImpl(m_range_min, true);
+            SlideToImpl(m_model.m_minimum, true);
             break;
         case GGK_END:
-            SlideToImpl(m_range_max, true);
+            SlideToImpl(m_model.m_maximum, true);
             break;
         case GGK_UP:
             if (m_orientation != HORIZONTAL)
-                SlideToImpl(m_posn + (0 < (m_range_max - m_range_min) ? 1 : -1), true);
+                SlideToImpl(m_model.m_value + (0 < (m_model.m_maximum - m_model.m_minimum) ? 1 : -1), true);
             break;
         case GGK_RIGHT:
             if (m_orientation != VERTICAL)
-                SlideToImpl(m_posn + (0 < (m_range_max - m_range_min) ? 1 : -1), true);
+                SlideToImpl(m_model.m_value + (0 < (m_model.m_maximum - m_model.m_minimum) ? 1 : -1), true);
             break;
         case GGK_DOWN:
             if (m_orientation != HORIZONTAL)
-                SlideToImpl(m_posn - (0 < (m_range_max - m_range_min) ? 1 : -1), true);
+                SlideToImpl(m_model.m_value - (0 < (m_model.m_maximum - m_model.m_minimum) ? 1 : -1), true);
             break;
         case GGK_LEFT:
             if (m_orientation != VERTICAL)
-                SlideToImpl(m_posn - (0 < (m_range_max - m_range_min) ? 1 : -1), true);
+                SlideToImpl(m_model.m_value - (0 < (m_model.m_maximum - m_model.m_minimum) ? 1 : -1), true);
             break;
         case GGK_PLUS:
         case GGK_KP_PLUS:
-            SlideToImpl(m_posn + 1, true);
+            SlideToImpl(m_model.m_value + 1, true);
             break;
         case GGK_MINUS:
         case GGK_KP_MINUS:
-            SlideToImpl(m_posn - 1, true);
+            SlideToImpl(m_model.m_value - 1, true);
             break;
         default:
             Control::KeyPress(key, key_code_point, mod_keys);
@@ -388,7 +384,7 @@ bool Slider<T>::EventFilter(Wnd* w, const WndEvent& event)
         case WndEvent::LButtonUp:
         case WndEvent::LClick: {
             if (!Disabled())
-                SlidSignal(m_posn, m_range_min, m_range_max);
+                SlidSignal(m_model.m_value, m_model.m_minimum, m_model.m_maximum);
             m_dragging_tab = false;
             break;
         }
@@ -404,9 +400,9 @@ bool Slider<T>::EventFilter(Wnd* w, const WndEvent& event)
 template <class T>
 void Slider<T>::MoveTabToPosn()
 {
-    assert((m_range_min <= m_posn && m_posn <= m_range_max) ||
-           (m_range_max <= m_posn && m_posn <= m_range_min));
-    double fractional_distance = static_cast<double>(m_posn - m_range_min) / (m_range_max - m_range_min);
+    assert((m_model.m_minimum <= m_model.m_value && m_model.m_value <= m_model.m_maximum) ||
+           (m_model.m_maximum <= m_model.m_value && m_model.m_value <= m_model.m_minimum));
+    double fractional_distance = static_cast<double>(m_model.m_value - m_model.m_minimum) / (m_model.m_maximum - m_model.m_minimum);
     int tab_width = m_orientation == VERTICAL ? Value(m_tab->Height()) : Value(m_tab->Width());
     int line_length = (m_orientation == VERTICAL ? Value(Height()) : Value(Width())) - tab_width;
     int pixel_distance = static_cast<int>(line_length * fractional_distance);
@@ -419,28 +415,28 @@ void Slider<T>::MoveTabToPosn()
 template <class T>
 void Slider<T>::UpdatePosn()
 {
-    T old_posn = m_posn;
+    T old_posn = m_model.m_value;
     int line_length = m_orientation == VERTICAL ? Value(Height() - m_tab->Height()) : Value(Width() - m_tab->Width());
     int tab_posn = (m_orientation == VERTICAL ? Value(Height() - m_tab->RelativeLowerRight().y) : Value(m_tab->RelativeUpperLeft().x));
     double fractional_distance = static_cast<double>(tab_posn) / line_length;
-    m_posn = m_range_min + static_cast<T>((m_range_max - m_range_min) * fractional_distance);
-    if (m_posn != old_posn)
-        SlidSignal(m_posn, m_range_min, m_range_max);
+    m_model.m_value = m_model.m_minimum + static_cast<T>((m_model.m_maximum - m_model.m_minimum) * fractional_distance);
+    if (m_model.m_value != old_posn)
+        SlidSignal(m_model.m_value, m_model.m_minimum, m_model.m_maximum);
 }
 
 template <class T>
 void Slider<T>::SlideToImpl(T p, bool signal)
 {
-    T old_posn = m_posn;
-    if (0 < (m_range_max - m_range_min) ? p < m_range_min : p > m_range_min)
-        m_posn = m_range_min;
-    else if (0 < (m_range_max - m_range_min) ? m_range_max < p : m_range_max > p)
-        m_posn = m_range_max;
+    T old_posn = m_model.m_value;
+    if (0 < (m_model.m_maximum - m_model.m_minimum) ? p < m_model.m_minimum : p > m_model.m_minimum)
+        m_model.m_value = m_model.m_minimum;
+    else if (0 < (m_model.m_maximum - m_model.m_minimum) ? m_model.m_maximum < p : m_model.m_maximum > p)
+        m_model.m_value = m_model.m_maximum;
     else
-        m_posn = p;
+        m_model.m_value = p;
     MoveTabToPosn();
-    if (signal && m_posn != old_posn) {
-        SlidSignal(m_posn, m_range_min, m_range_max);
+    if (signal && m_model.m_value != old_posn) {
+        SlidSignal(m_model.m_value, m_model.m_minimum, m_model.m_maximum);
     }
 }
 
