@@ -40,6 +40,7 @@
 #include <GG/PtRect.h>
 
 #include <memory>
+#include <functional>
 
 /** \namespace GG \brief The namespace that encloses all GG classes,
     functions, typedefs, enums, etc. */
@@ -143,306 +144,298 @@ void ProcessThenRemoveExpiredPtrs(
 
 /** "Regions" of a window; used e.g. to determine direction(s) of drag when a
     window that has a drag-frame is clicked. */
-GG_ENUM(WndRegion,
-    WR_NONE = -1, 
-    WR_TOPLEFT = 0, 
-    WR_TOP, 
-    WR_TOPRIGHT, 
-    WR_MIDLEFT, 
-    WR_MIDDLE, 
-    WR_MIDRIGHT, 
-    WR_BOTTOMLEFT, 
-    WR_BOTTOM, 
-    WR_BOTTOMRIGHT
+GG_ENUM(
+    (WndRegion),
+    ((WR_NONE, "WR_NONE", -1))
+    ((WR_TOPLEFT, "WR_TOPLEFT", 0))
+    ((WR_TOP))
+    ((WR_TOPRIGHT))
+    ((WR_MIDLEFT))
+    ((WR_MIDDLE))
+    ((WR_MIDRIGHT))
+    ((WR_BOTTOMLEFT))
+    ((WR_BOTTOM))
+    ((WR_BOTTOMRIGHT))
 )
 
 /** The orientations for scrollbars, sliders, etc. */
-GG_ENUM(Orientation,
-    VERTICAL,  ///< Vertical orientation.
-    HORIZONTAL ///< Horizontal orientation.
+GG_ENUM(
+    (Orientation),
+    ((VERTICAL))   ///< Vertical orientation.
+    ((HORIZONTAL)) ///< Horizontal orientation.
 )
 
 /** Adpated from SDLKey enum in SDL_keysym.h of the SDL library; capital
     letter keys added. */
-GG_ENUM(Key,
+GG_ENUM(
+    (Key),
     // The keyboard symbols have been cleverly chosen to map to ASCII
-    GGK_NONE         = -999,
-    GGK_UNKNOWN      = 0,
-    GGK_FIRST        = 0,
-    GGK_BACKSPACE    = 8,
-    GGK_TAB          = 9,
-    GGK_CLEAR        = 12,
-    GGK_RETURN       = 13,
-    GGK_PAUSE        = 19,
-    GGK_ESCAPE       = 27,
-    GGK_SPACE        = 32,
-    GGK_EXCLAIM      = 33,
-    GGK_QUOTEDBL     = 34,
-    GGK_HASH         = 35,
-    GGK_DOLLAR       = 36,
-    GGK_AMPERSAND    = 38,
-    GGK_QUOTE        = 39,
-    GGK_LEFTPAREN    = 40,
-    GGK_RIGHTPAREN   = 41,
-    GGK_ASTERISK     = 42,
-    GGK_PLUS         = 43,
-    GGK_COMMA        = 44,
-    GGK_MINUS        = 45,
-    GGK_PERIOD       = 46,
-    GGK_SLASH        = 47,
-    GGK_0            = 48,
-    GGK_1            = 49,
-    GGK_2            = 50,
-    GGK_3            = 51,
-    GGK_4            = 52,
-    GGK_5            = 53,
-    GGK_6            = 54,
-    GGK_7            = 55,
-    GGK_8            = 56,
-    GGK_9            = 57,
-    GGK_COLON        = 58,
-    GGK_SEMICOLON    = 59,
-    GGK_LESS         = 60,
-    GGK_EQUALS       = 61,
-    GGK_GREATER      = 62,
-    GGK_QUESTION     = 63,
-    GGK_AT           = 64,
-    GGK_A            = 65,
-    GGK_B            = 66,
-    GGK_C            = 67,
-    GGK_D            = 68,
-    GGK_E            = 69,
-    GGK_F            = 70,
-    GGK_G            = 71,
-    GGK_H            = 72,
-    GGK_I            = 73,
-    GGK_J            = 74,
-    GGK_K            = 75,
-    GGK_L            = 76,
-    GGK_M            = 77,
-    GGK_N            = 78,
-    GGK_O            = 79,
-    GGK_P            = 80,
-    GGK_Q            = 81,
-    GGK_R            = 82,
-    GGK_S            = 83,
-    GGK_T            = 84,
-    GGK_U            = 85,
-    GGK_V            = 86,
-    GGK_W            = 87,
-    GGK_X            = 88,
-    GGK_Y            = 89,
-    GGK_Z            = 90,
-    GGK_LEFTBRACKET  = 91,
-    GGK_BACKSLASH    = 92,
-    GGK_RIGHTBRACKET = 93,
-    GGK_CARET        = 94,
-    GGK_UNDERSCORE   = 95,
-    GGK_BACKQUOTE    = 96,
-    GGK_a            = 97,
-    GGK_b            = 98,
-    GGK_c            = 99,
-    GGK_d            = 100,
-    GGK_e            = 101,
-    GGK_f            = 102,
-    GGK_g            = 103,
-    GGK_h            = 104,
-    GGK_i            = 105,
-    GGK_j            = 106,
-    GGK_k            = 107,
-    GGK_l            = 108,
-    GGK_m            = 109,
-    GGK_n            = 110,
-    GGK_o            = 111,
-    GGK_p            = 112,
-    GGK_q            = 113,
-    GGK_r            = 114,
-    GGK_s            = 115,
-    GGK_t            = 116,
-    GGK_u            = 117,
-    GGK_v            = 118,
-    GGK_w            = 119,
-    GGK_x            = 120,
-    GGK_y            = 121,
-    GGK_z            = 122,
-    GGK_DELETE       = 127,
+    ((GGK_NONE, "GGK_NONE", -999))
+    ((GGK_UNKNOWN, "GGK_UNKNOWN", 0))
+    ((GGK_BACKSPACE, "GGK_BACKSPACE", 8))
+    ((GGK_TAB, "GGK_TAB", 9))
+    ((GGK_CLEAR, "GGK_CLEAR", 12))
+    ((GGK_RETURN, "GGK_RETURN", 13))
+    ((GGK_PAUSE, "GGK_PAUSE", 19))
+    ((GGK_ESCAPE, "GGK_ESCAPE", 27))
+    ((GGK_SPACE, "GGK_SPACE", 32))
+    ((GGK_EXCLAIM, "GGK_EXCLAIM", 33))
+    ((GGK_QUOTEDBL, "GGK_QUOTEDBL", 34))
+    ((GGK_HASH, "GGK_HASH", 35))
+    ((GGK_DOLLAR, "GGK_DOLLAR", 36))
+    ((GGK_AMPERSAND, "GGK_AMPERSAND", 38))
+    ((GGK_QUOTE, "GGK_QUOTE", 39))
+    ((GGK_LEFTPAREN, "GGK_LEFTPAREN", 40))
+    ((GGK_RIGHTPAREN, "GGK_RIGHTPAREN", 41))
+    ((GGK_ASTERISK, "GGK_ASTERISK", 42))
+    ((GGK_PLUS, "GGK_PLUS", 43))
+    ((GGK_COMMA, "GGK_COMMA", 44))
+    ((GGK_MINUS, "GGK_MINUS", 45))
+    ((GGK_PERIOD, "GGK_PERIOD", 46))
+    ((GGK_SLASH, "GGK_SLASH", 47))
+    ((GGK_0, "GGK_0", 48))
+    ((GGK_1, "GGK_1", 49))
+    ((GGK_2, "GGK_2", 50))
+    ((GGK_3, "GGK_3", 51))
+    ((GGK_4, "GGK_4", 52))
+    ((GGK_5, "GGK_5", 53))
+    ((GGK_6, "GGK_6", 54))
+    ((GGK_7, "GGK_7", 55))
+    ((GGK_8, "GGK_8", 56))
+    ((GGK_9, "GGK_9", 57))
+    ((GGK_COLON, "GGK_COLON", 58))
+    ((GGK_SEMICOLON, "GGK_SEMICOLON", 59))
+    ((GGK_LESS, "GGK_LESS", 60))
+    ((GGK_EQUALS, "GGK_EQUALS", 61))
+    ((GGK_GREATER, "GGK_GREATER", 62))
+    ((GGK_QUESTION, "GGK_QUESTION", 63))
+    ((GGK_AT, "GGK_AT", 64))
+    ((GGK_A, "GGK_A", 65))
+    ((GGK_B, "GGK_B", 66))
+    ((GGK_C, "GGK_C", 67))
+    ((GGK_D, "GGK_D", 68))
+    ((GGK_E, "GGK_E", 69))
+    ((GGK_F, "GGK_F", 70))
+    ((GGK_G, "GGK_G", 71))
+    ((GGK_H, "GGK_H", 72))
+    ((GGK_I, "GGK_I", 73))
+    ((GGK_J, "GGK_J", 74))
+    ((GGK_K, "GGK_K", 75))
+    ((GGK_L, "GGK_L", 76))
+    ((GGK_M, "GGK_M", 77))
+    ((GGK_N, "GGK_N", 78))
+    ((GGK_O, "GGK_O", 79))
+    ((GGK_P, "GGK_P", 80))
+    ((GGK_Q, "GGK_Q", 81))
+    ((GGK_R, "GGK_R", 82))
+    ((GGK_S, "GGK_S", 83))
+    ((GGK_T, "GGK_T", 84))
+    ((GGK_U, "GGK_U", 85))
+    ((GGK_V, "GGK_V", 86))
+    ((GGK_W, "GGK_W", 87))
+    ((GGK_X, "GGK_X", 88))
+    ((GGK_Y, "GGK_Y", 89))
+    ((GGK_Z, "GGK_Z", 90))
+    ((GGK_LEFTBRACKET, "GGK_LEFTBRACKET", 91))
+    ((GGK_BACKSLASH, "GGK_BACKSLASH", 92))
+    ((GGK_RIGHTBRACKET, "GGK_RIGHTBRACKET", 93))
+    ((GGK_CARET, "GGK_CARET", 94))
+    ((GGK_UNDERSCORE, "GGK_UNDERSCORE", 95))
+    ((GGK_BACKQUOTE, "GGK_BACKQUOTE", 96))
+    ((GGK_a, "GGK_a", 97))
+    ((GGK_b, "GGK_b", 98))
+    ((GGK_c, "GGK_c", 99))
+    ((GGK_d, "GGK_d", 100))
+    ((GGK_e, "GGK_e", 101))
+    ((GGK_f, "GGK_f", 102))
+    ((GGK_g, "GGK_g", 103))
+    ((GGK_h, "GGK_h", 104))
+    ((GGK_i, "GGK_i", 105))
+    ((GGK_j, "GGK_j", 106))
+    ((GGK_k, "GGK_k", 107))
+    ((GGK_l, "GGK_l", 108))
+    ((GGK_m, "GGK_m", 109))
+    ((GGK_n, "GGK_n", 110))
+    ((GGK_o, "GGK_o", 111))
+    ((GGK_p, "GGK_p", 112))
+    ((GGK_q, "GGK_q", 113))
+    ((GGK_r, "GGK_r", 114))
+    ((GGK_s, "GGK_s", 115))
+    ((GGK_t, "GGK_t", 116))
+    ((GGK_u, "GGK_u", 117))
+    ((GGK_v, "GGK_v", 118))
+    ((GGK_w, "GGK_w", 119))
+    ((GGK_x, "GGK_x", 120))
+    ((GGK_y, "GGK_y", 121))
+    ((GGK_z, "GGK_z", 122))
+    ((GGK_DELETE, "GGK_DELETE", 127))
     // End of ASCII mapped keysyms
 
     // International keyboard syms
-    GGK_WORLD_0      = 160,      // 0xA0
-    GGK_WORLD_1      = 161,
-    GGK_WORLD_2      = 162,
-    GGK_WORLD_3      = 163,
-    GGK_WORLD_4      = 164,
-    GGK_WORLD_5      = 165,
-    GGK_WORLD_6      = 166,
-    GGK_WORLD_7      = 167,
-    GGK_WORLD_8      = 168,
-    GGK_WORLD_9      = 169,
-    GGK_WORLD_10     = 170,
-    GGK_WORLD_11     = 171,
-    GGK_WORLD_12     = 172,
-    GGK_WORLD_13     = 173,
-    GGK_WORLD_14     = 174,
-    GGK_WORLD_15     = 175,
-    GGK_WORLD_16     = 176,
-    GGK_WORLD_17     = 177,
-    GGK_WORLD_18     = 178,
-    GGK_WORLD_19     = 179,
-    GGK_WORLD_20     = 180,
-    GGK_WORLD_21     = 181,
-    GGK_WORLD_22     = 182,
-    GGK_WORLD_23     = 183,
-    GGK_WORLD_24     = 184,
-    GGK_WORLD_25     = 185,
-    GGK_WORLD_26     = 186,
-    GGK_WORLD_27     = 187,
-    GGK_WORLD_28     = 188,
-    GGK_WORLD_29     = 189,
-    GGK_WORLD_30     = 190,
-    GGK_WORLD_31     = 191,
-    GGK_WORLD_32     = 192,
-    GGK_WORLD_33     = 193,
-    GGK_WORLD_34     = 194,
-    GGK_WORLD_35     = 195,
-    GGK_WORLD_36     = 196,
-    GGK_WORLD_37     = 197,
-    GGK_WORLD_38     = 198,
-    GGK_WORLD_39     = 199,
-    GGK_WORLD_40     = 200,
-    GGK_WORLD_41     = 201,
-    GGK_WORLD_42     = 202,
-    GGK_WORLD_43     = 203,
-    GGK_WORLD_44     = 204,
-    GGK_WORLD_45     = 205,
-    GGK_WORLD_46     = 206,
-    GGK_WORLD_47     = 207,
-    GGK_WORLD_48     = 208,
-    GGK_WORLD_49     = 209,
-    GGK_WORLD_50     = 210,
-    GGK_WORLD_51     = 211,
-    GGK_WORLD_52     = 212,
-    GGK_WORLD_53     = 213,
-    GGK_WORLD_54     = 214,
-    GGK_WORLD_55     = 215,
-    GGK_WORLD_56     = 216,
-    GGK_WORLD_57     = 217,
-    GGK_WORLD_58     = 218,
-    GGK_WORLD_59     = 219,
-    GGK_WORLD_60     = 220,
-    GGK_WORLD_61     = 221,
-    GGK_WORLD_62     = 222,
-    GGK_WORLD_63     = 223,
-    GGK_WORLD_64     = 224,
-    GGK_WORLD_65     = 225,
-    GGK_WORLD_66     = 226,
-    GGK_WORLD_67     = 227,
-    GGK_WORLD_68     = 228,
-    GGK_WORLD_69     = 229,
-    GGK_WORLD_70     = 230,
-    GGK_WORLD_71     = 231,
-    GGK_WORLD_72     = 232,
-    GGK_WORLD_73     = 233,
-    GGK_WORLD_74     = 234,
-    GGK_WORLD_75     = 235,
-    GGK_WORLD_76     = 236,
-    GGK_WORLD_77     = 237,
-    GGK_WORLD_78     = 238,
-    GGK_WORLD_79     = 239,
-    GGK_WORLD_80     = 240,
-    GGK_WORLD_81     = 241,
-    GGK_WORLD_82     = 242,
-    GGK_WORLD_83     = 243,
-    GGK_WORLD_84     = 244,
-    GGK_WORLD_85     = 245,
-    GGK_WORLD_86     = 246,
-    GGK_WORLD_87     = 247,
-    GGK_WORLD_88     = 248,
-    GGK_WORLD_89     = 249,
-    GGK_WORLD_90     = 250,
-    GGK_WORLD_91     = 251,
-    GGK_WORLD_92     = 252,
-    GGK_WORLD_93     = 253,
-    GGK_WORLD_94     = 254,
-    GGK_WORLD_95     = 255,      // 0xFF
+    ((GGK_WORLD_0, "GGK_WORLD_0", 160))      // 0xA0
+    ((GGK_WORLD_1, "GGK_WORLD_1", 161))
+    ((GGK_WORLD_2, "GGK_WORLD_2", 162))
+    ((GGK_WORLD_3, "GGK_WORLD_3", 163))
+    ((GGK_WORLD_4, "GGK_WORLD_4", 164))
+    ((GGK_WORLD_5, "GGK_WORLD_5", 165))
+    ((GGK_WORLD_6, "GGK_WORLD_6", 166))
+    ((GGK_WORLD_7, "GGK_WORLD_7", 167))
+    ((GGK_WORLD_8, "GGK_WORLD_8", 168))
+    ((GGK_WORLD_9, "GGK_WORLD_9", 169))
+    ((GGK_WORLD_10, "GGK_WORLD_10", 170))
+    ((GGK_WORLD_11, "GGK_WORLD_11", 171))
+    ((GGK_WORLD_12, "GGK_WORLD_12", 172))
+    ((GGK_WORLD_13, "GGK_WORLD_13", 173))
+    ((GGK_WORLD_14, "GGK_WORLD_14", 174))
+    ((GGK_WORLD_15, "GGK_WORLD_15", 175))
+    ((GGK_WORLD_16, "GGK_WORLD_16", 176))
+    ((GGK_WORLD_17, "GGK_WORLD_17", 177))
+    ((GGK_WORLD_18, "GGK_WORLD_18", 178))
+    ((GGK_WORLD_19, "GGK_WORLD_19", 179))
+    ((GGK_WORLD_20, "GGK_WORLD_20", 180))
+    ((GGK_WORLD_21, "GGK_WORLD_21", 181))
+    ((GGK_WORLD_22, "GGK_WORLD_22", 182))
+    ((GGK_WORLD_23, "GGK_WORLD_23", 183))
+    ((GGK_WORLD_24, "GGK_WORLD_24", 184))
+    ((GGK_WORLD_25, "GGK_WORLD_25", 185))
+    ((GGK_WORLD_26, "GGK_WORLD_26", 186))
+    ((GGK_WORLD_27, "GGK_WORLD_27", 187))
+    ((GGK_WORLD_28, "GGK_WORLD_28", 188))
+    ((GGK_WORLD_29, "GGK_WORLD_29", 189))
+    ((GGK_WORLD_30, "GGK_WORLD_30", 190))
+    ((GGK_WORLD_31, "GGK_WORLD_31", 191))
+    ((GGK_WORLD_32, "GGK_WORLD_32", 192))
+    ((GGK_WORLD_33, "GGK_WORLD_33", 193))
+    ((GGK_WORLD_34, "GGK_WORLD_34", 194))
+    ((GGK_WORLD_35, "GGK_WORLD_35", 195))
+    ((GGK_WORLD_36, "GGK_WORLD_36", 196))
+    ((GGK_WORLD_37, "GGK_WORLD_37", 197))
+    ((GGK_WORLD_38, "GGK_WORLD_38", 198))
+    ((GGK_WORLD_39, "GGK_WORLD_39", 199))
+    ((GGK_WORLD_40, "GGK_WORLD_40", 200))
+    ((GGK_WORLD_41, "GGK_WORLD_41", 201))
+    ((GGK_WORLD_42, "GGK_WORLD_42", 202))
+    ((GGK_WORLD_43, "GGK_WORLD_43", 203))
+    ((GGK_WORLD_44, "GGK_WORLD_44", 204))
+    ((GGK_WORLD_45, "GGK_WORLD_45", 205))
+    ((GGK_WORLD_46, "GGK_WORLD_46", 206))
+    ((GGK_WORLD_47, "GGK_WORLD_47", 207))
+    ((GGK_WORLD_48, "GGK_WORLD_48", 208))
+    ((GGK_WORLD_49, "GGK_WORLD_49", 209))
+    ((GGK_WORLD_50, "GGK_WORLD_50", 210))
+    ((GGK_WORLD_51, "GGK_WORLD_51", 211))
+    ((GGK_WORLD_52, "GGK_WORLD_52", 212))
+    ((GGK_WORLD_53, "GGK_WORLD_53", 213))
+    ((GGK_WORLD_54, "GGK_WORLD_54", 214))
+    ((GGK_WORLD_55, "GGK_WORLD_55", 215))
+    ((GGK_WORLD_56, "GGK_WORLD_56", 216))
+    ((GGK_WORLD_57, "GGK_WORLD_57", 217))
+    ((GGK_WORLD_58, "GGK_WORLD_58", 218))
+    ((GGK_WORLD_59, "GGK_WORLD_59", 219))
+    ((GGK_WORLD_60, "GGK_WORLD_60", 220))
+    ((GGK_WORLD_61, "GGK_WORLD_61", 221))
+    ((GGK_WORLD_62, "GGK_WORLD_62", 222))
+    ((GGK_WORLD_63, "GGK_WORLD_63", 223))
+    ((GGK_WORLD_64, "GGK_WORLD_64", 224))
+    ((GGK_WORLD_65, "GGK_WORLD_65", 225))
+    ((GGK_WORLD_66, "GGK_WORLD_66", 226))
+    ((GGK_WORLD_67, "GGK_WORLD_67", 227))
+    ((GGK_WORLD_68, "GGK_WORLD_68", 228))
+    ((GGK_WORLD_69, "GGK_WORLD_69", 229))
+    ((GGK_WORLD_70, "GGK_WORLD_70", 230))
+    ((GGK_WORLD_71, "GGK_WORLD_71", 231))
+    ((GGK_WORLD_72, "GGK_WORLD_72", 232))
+    ((GGK_WORLD_73, "GGK_WORLD_73", 233))
+    ((GGK_WORLD_74, "GGK_WORLD_74", 234))
+    ((GGK_WORLD_75, "GGK_WORLD_75", 235))
+    ((GGK_WORLD_76, "GGK_WORLD_76", 236))
+    ((GGK_WORLD_77, "GGK_WORLD_77", 237))
+    ((GGK_WORLD_78, "GGK_WORLD_78", 238))
+    ((GGK_WORLD_79, "GGK_WORLD_79", 239))
+    ((GGK_WORLD_80, "GGK_WORLD_80", 240))
+    ((GGK_WORLD_81, "GGK_WORLD_81", 241))
+    ((GGK_WORLD_82, "GGK_WORLD_82", 242))
+    ((GGK_WORLD_83, "GGK_WORLD_83", 243))
+    ((GGK_WORLD_84, "GGK_WORLD_84", 244))
+    ((GGK_WORLD_85, "GGK_WORLD_85", 245))
+    ((GGK_WORLD_86, "GGK_WORLD_86", 246))
+    ((GGK_WORLD_87, "GGK_WORLD_87", 247))
+    ((GGK_WORLD_88, "GGK_WORLD_88", 248))
+    ((GGK_WORLD_89, "GGK_WORLD_89", 249))
+    ((GGK_WORLD_90, "GGK_WORLD_90", 250))
+    ((GGK_WORLD_91, "GGK_WORLD_91", 251))
+    ((GGK_WORLD_92, "GGK_WORLD_92", 252))
+    ((GGK_WORLD_93, "GGK_WORLD_93", 253))
+    ((GGK_WORLD_94, "GGK_WORLD_94", 254))
+    ((GGK_WORLD_95, "GGK_WORLD_95", 255))      // 0xFF
 
     // Numeric keypad
-    GGK_KP0          = 256,
-    GGK_KP1          = 257,
-    GGK_KP2          = 258,
-    GGK_KP3          = 259,
-    GGK_KP4          = 260,
-    GGK_KP5          = 261,
-    GGK_KP6          = 262,
-    GGK_KP7          = 263,
-    GGK_KP8          = 264,
-    GGK_KP9          = 265,
-    GGK_KP_PERIOD    = 266,
-    GGK_KP_DIVIDE    = 267,
-    GGK_KP_MULTIPLY  = 268,
-    GGK_KP_MINUS     = 269,
-    GGK_KP_PLUS      = 270,
-    GGK_KP_ENTER     = 271,
-    GGK_KP_EQUALS    = 272,
+    ((GGK_KP0, "GGK_KP0", 256))
+    ((GGK_KP1, "GGK_KP1", 257))
+    ((GGK_KP2, "GGK_KP2", 258))
+    ((GGK_KP3, "GGK_KP3", 259))
+    ((GGK_KP4, "GGK_KP4", 260))
+    ((GGK_KP5, "GGK_KP5", 261))
+    ((GGK_KP6, "GGK_KP6", 262))
+    ((GGK_KP7, "GGK_KP7", 263))
+    ((GGK_KP8, "GGK_KP8", 264))
+    ((GGK_KP9, "GGK_KP9", 265))
+    ((GGK_KP_PERIOD, "GGK_KP_PERIOD", 266))
+    ((GGK_KP_DIVIDE, "GGK_KP_DIVIDE", 267))
+    ((GGK_KP_MULTIPLY, "GGK_KP_MULTIPLY", 268))
+    ((GGK_KP_MINUS, "GGK_KP_MINUS", 269))
+    ((GGK_KP_PLUS, "GGK_KP_PLUS", 270))
+    ((GGK_KP_ENTER, "GGK_KP_ENTER", 271))
+    ((GGK_KP_EQUALS, "GGK_KP_EQUALS", 272))
 
     // Arrows + Home/End pad
-    GGK_UP           = 273,
-    GGK_DOWN         = 274,
-    GGK_RIGHT        = 275,
-    GGK_LEFT         = 276,
-    GGK_INSERT       = 277,
-    GGK_HOME         = 278,
-    GGK_END          = 279,
-    GGK_PAGEUP       = 280,
-    GGK_PAGEDOWN     = 281,
+    ((GGK_UP, "GGK_UP", 273))
+    ((GGK_DOWN, "GGK_DOWN", 274))
+    ((GGK_RIGHT, "GGK_RIGHT", 275))
+    ((GGK_LEFT, "GGK_LEFT", 276))
+    ((GGK_INSERT, "GGK_INSERT", 277))
+    ((GGK_HOME, "GGK_HOME", 278))
+    ((GGK_END, "GGK_END", 279))
+    ((GGK_PAGEUP, "GGK_PAGEUP", 280))
+    ((GGK_PAGEDOWN, "GGK_PAGEDOWN", 281))
 
     // Function keys
-    GGK_F1           = 282,
-    GGK_F2           = 283,
-    GGK_F3           = 284,
-    GGK_F4           = 285,
-    GGK_F5           = 286,
-    GGK_F6           = 287,
-    GGK_F7           = 288,
-    GGK_F8           = 289,
-    GGK_F9           = 290,
-    GGK_F10          = 291,
-    GGK_F11          = 292,
-    GGK_F12          = 293,
-    GGK_F13          = 294,
-    GGK_F14          = 295,
-    GGK_F15          = 296,
+    ((GGK_F1, "GGK_F1", 282))
+    ((GGK_F2, "GGK_F2", 283))
+    ((GGK_F3, "GGK_F3", 284))
+    ((GGK_F4, "GGK_F4", 285))
+    ((GGK_F5, "GGK_F5", 286))
+    ((GGK_F6, "GGK_F6", 287))
+    ((GGK_F7, "GGK_F7", 288))
+    ((GGK_F8, "GGK_F8", 289))
+    ((GGK_F9, "GGK_F9", 290))
+    ((GGK_F10, "GGK_F10", 291))
+    ((GGK_F11, "GGK_F11", 292))
+    ((GGK_F12, "GGK_F12", 293))
+    ((GGK_F13, "GGK_F13", 294))
+    ((GGK_F14, "GGK_F14", 295))
+    ((GGK_F15, "GGK_F15", 296))
 
     // Key state modifier keys
-    GGK_NUMLOCK      = 300,
-    GGK_CAPSLOCK     = 301,
-    GGK_SCROLLOCK    = 302,
-    GGK_RSHIFT       = 303,
-    GGK_LSHIFT       = 304,
-    GGK_RCTRL        = 305,
-    GGK_LCTRL        = 306,
-    GGK_RALT         = 307,
-    GGK_LALT         = 308,
-    GGK_RMETA        = 309,
-    GGK_LMETA        = 310,
-    GGK_LSUPER       = 311,      // Left "Windows" key
-    GGK_RSUPER       = 312,      // Right "Windows" key
-    GGK_MODE         = 313,      // "Alt Gr" key
-    GGK_COMPOSE      = 314,      // Multi-key compose key
-
-    // Miscellaneous function keys
-    GGK_HELP         = 315,
-    GGK_PRINT        = 316,
-    GGK_SYSREQ       = 317,
-    GGK_BREAK        = 318,
-    GGK_MENU         = 319,
-    GGK_POWER        = 320,      // Power Macintosh power key
-    GGK_EURO         = 321,      // Some european keyboards
-    GGK_UNDO         = 322,      // Atari keyboard has Undo
+    ((GGK_NUMLOCK, "GGK_NUMLOCK", 300))
+    ((GGK_CAPSLOCK, "GGK_CAPSLOCK", 301))
+    ((GGK_SCROLLOCK, "GGK_SCROLLOCK", 302))
+    ((GGK_RSHIFT, "GGK_RSHIFT", 303))
+    ((GGK_LSHIFT, "GGK_LSHIFT", 304))
+    ((GGK_RCTRL, "GGK_RCTRL", 305))
+    ((GGK_LCTRL, "GGK_LCTRL", 306))
+    ((GGK_RALT, "GGK_RALT", 307))
+    ((GGK_LALT, "GGK_LALT", 308))
+    ((GGK_RMETA, "GGK_RMETA", 309))
+    ((GGK_LMETA, "GGK_LMETA", 310))
+    ((GGK_LSUPER, "GGK_LSUPER", 311))      // Left "Windows" key
+    ((GGK_RSUPER, "GGK_RSUPER", 312))      // Right "Windows" key
+    ((GGK_MODE, "GGK_MODE", 313))      // "Alt Gr" key
+    ((GGK_COMPOSE, "GGK_COMPOSE", 314))      // Multi-key compose key
 
     // Add any other keys here
 
-    GGK_LAST
+    ((GGK_LAST))
 )
 
 /** Translates a printable key combination from a keypad press to the

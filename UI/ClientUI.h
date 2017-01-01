@@ -1,7 +1,7 @@
 #ifndef _ClientUI_h_
 #define _ClientUI_h_
 
-
+#include <boost/filesystem/path.hpp>
 #include <GG/GGFwd.h>
 
 #include <boost/filesystem/path.hpp>

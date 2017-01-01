@@ -207,7 +207,7 @@ void Hotkey::ReadFromOptions(OptionsDB& db) {
         if (key_modkey_pair.first == GG::GGK_NONE)
             continue;
 
-        if (key_modkey_pair.first == GG::EnumMap<GG::Key>::BAD_VALUE) {
+        if (key_modkey_pair.first == GG::GGK_UNKNOWN) {
             ErrorLogger() << "Hotkey::ReadFromOptions : Invalid key spec: '"
                           << option_string << "' for hotkey " << hotkey.m_name;
             continue;

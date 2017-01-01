@@ -13,6 +13,7 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/optional/optional.hpp>
 
+#include <map>
 #include <set>
 #include <string>
 #include <vector>

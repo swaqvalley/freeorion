@@ -188,7 +188,6 @@ namespace {
         keys[SDLK_KP_PERIOD] = GGK_KP_PERIOD;
 
         // keys[SDLK_APPLICATION] = GGK_APPLICATION;
-        keys[SDLK_POWER] = GGK_POWER;
         keys[SDLK_KP_EQUALS] = GGK_KP_EQUALS;
         keys[SDLK_F13] = GGK_F13;
         keys[SDLK_F14] = GGK_F14;
@@ -203,12 +202,9 @@ namespace {
         // keys[SDLK_F23] = GGK_F23;
         // keys[SDLK_F24] = GGK_F24;
         // keys[SDLK_EXECUTE] = GGK_EXECUTE;
-        keys[SDLK_HELP] = GGK_HELP;
-        keys[SDLK_MENU] = GGK_MENU;
         // keys[SDLK_SELECT] = GGK_SELECT;
         // keys[SDLK_STOP] = GGK_STOP;
         // keys[SDLK_AGAIN] = GGK_AGAIN;
-        keys[SDLK_UNDO] = GGK_UNDO;
         // keys[SDLK_CUT] = GGK_CUT;
         // keys[SDLK_COPY] = GGK_COPY;
         // keys[SDLK_PASTE] = GGK_PASTE;
@@ -220,7 +216,6 @@ namespace {
         //keys[SDLK_KP_EQUALSAS400] = ?
 
         // keys[SDLK_ALTERASE] = GGK_ALTERASE;
-        keys[SDLK_SYSREQ] = GGK_SYSREQ;
         // keys[SDLK_CANCEL] = GGK_CANCEL;
         keys[SDLK_CLEAR] = GGK_CLEAR;
         // keys[SDLK_PRIOR] = GGK_PRIOR;

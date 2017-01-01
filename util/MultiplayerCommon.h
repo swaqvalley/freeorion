@@ -11,6 +11,7 @@
 #include <GG/Clr.h>
 
 #include <list>
+#include <map>
 #include <set>
 #include <vector>
 #include <map>
