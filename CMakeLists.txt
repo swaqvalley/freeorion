@@ -742,6 +742,12 @@ if(UNIX AND NOT APPLE)
         PATTERN "*.pyc" EXCLUDE
     )
 
+    install(
+        FILES
+        ${CMAKE_SOURCE_DIR}/freeorion.appdata.xml
+        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/appdata
+    )
+
     foreach(SIZE 16 24 32 64 128 256)
         install(
             FILES
