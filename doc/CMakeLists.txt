@@ -41,8 +41,14 @@ if(SPHINX_FOUND)
         COMMAND
             "${SPHINX_APIDOC_EXECUTABLE}" --separate --module-first --force "--doc-project=${PROJECT_NAME}" "--output-dir=${CMAKE_CURRENT_BINARY_DIR}/sphinx" "${CMAKE_SOURCE_DIR}/default/python"
         COMMAND
+            "breathe-apidoc" --force "--project=${PROJECT_NAME}" "--output-dir=${CMAKE_CURRENT_BINARY_DIR}/sphinx" "${CMAKE_CURRENT_BINARY_DIR}/cpp-apidoc/xml"
+        COMMAND
             "${SPHINX_BUILD_EXECUTABLE}" "${CMAKE_CURRENT_BINARY_DIR}/sphinx" "${CMAKE_CURRENT_BINARY_DIR}/python-doc"
         COMMENT "Generating FreeOrion API documentation with Sphinx" VERBATIM
     )
     add_dependencies(doc python-apidoc)
+endif()
+
+if(SPHINX_FOUND AND DOXYGEN_FOUND)
+    add_dependencies(python-apidoc cpp-apidoc)
 endif()

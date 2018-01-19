@@ -6,6 +6,12 @@ Welcome to FreeOrion's documentation!
    :caption: Contents:
 
 
+.. doxygenindex::
+.. doxygenfunction::
+.. doxygenstruct::
+.. doxygenenum::
+.. doxygentypedef::
+.. doxygenclass::
 
 Indices and tables
 ==================
