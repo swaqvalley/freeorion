@@ -917,7 +917,7 @@ void SaveFileDialog::UpdatePreviewList() {
     }
 }
 
-void SaveFileDialog::SetPreviewList(const fs::path& path) {
+void SaveFileDialog::SetPreviewList(const boost::filesystem::path& path) {
     auto setup_func = [this, &path]() { m_file_list->LoadLocalSaveGamePreviews(path, m_extension); };
 
     CheckChoiceValidity();

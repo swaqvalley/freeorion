@@ -220,6 +220,8 @@ namespace parse {
     /**  \brief Return a vector of absolute paths to script files in the given path
      * 
      * @param[in] path relative or absolute directory (searched recursively)
+     * @param[in] allow_permissive include files without *.focs.txt extension
+     *            listing.
      * @return Any *.focs.txt files in path or 'GetResourceDir() / path'.
      */
     std::vector<boost::filesystem::path> ListScripts(const boost::filesystem::path& path, bool allow_permissive) {
@@ -523,10 +525,11 @@ namespace parse {
         /** \brief Load and parse script file(s) from given path
          * 
          * @param[in] path absolute path to a regular file
-         * @param[in] l lexer instance to use
+         * @param[in] lexer lexer instance to use
          * @param[out] filename filename of the given path
          * @param[out] file_contents parsed contents of file(s)
          * @param[out] first content iterator
+         * @param[out] last end content iterator
          * @param[out] it lexer iterator
          */
         void parse_file_common(const boost::filesystem::path& path, const parse::lexer& lexer,
