@@ -1,4 +1,6 @@
-# FreeOrion
+=========
+FreeOrion
+=========
 
 FreeOrion is a free, Open Source, turn-based space empire and galactic conquest
 computer game.
@@ -12,7 +14,8 @@ to give the community an easy way to customize the game mechanics and
 presentation to create a living, breathing universe in a *grand campaign* model.
 
 
-## Requirements
+Requirements
+------------
 
 FreeOrion requires an *OpenGL 2.1* capable graphic card and a display with a
 minimum resolution of at least *800x600*.
@@ -23,7 +26,8 @@ compatible processors.  Other operating systems and architectures have reported
 to be working by users, but are not actively supported by the FreeOrion project.
 
 
-## Download
+Download
+--------
 
 [FreeOrion Stable Releases] are the recommended way to play FreeOrion.  Stable
 Releases can be obtained as native installer binaries for Windows and Mac OSX
@@ -38,7 +42,8 @@ Releases can be obtained as native installer binaries for Windows and Mac OSX
 from Sourceforge.
 
 
-## Install
+Install
+-------
 
 For Windows execute the native installer binary and follow the on-screen
 instructions of the installer to install FreeOrion.
@@ -60,9 +65,12 @@ packages via the command line.
   * [Void package] stable release: `# xbps-install freeorion`
   * [ArchLinux package] stable release
 
-## Directories
+
+Directories
+-----------
+
 * install directory  
-The location of this README.md file, called `<install_dir>` below.
+The location of this README.rst file, called `<install_dir>` below.
 * config - game settings  
 Called `<config_dir>` below.  
     * linux  
@@ -91,20 +99,23 @@ Called `<resource_dir>` below.
     `<resource_dir>/python/AI`  
 
 
-## Contact and Getting Help
+Contact and Getting Help
+------------------------
 
 Visit the [FreeOrion Homepage] to learn more about the project.  Also you can
 get in touch with the FreeOrion developers and join the community in the
 [FreeOrion Forum].
 
 
-## Contribute
+Contribute
+----------
 
 The FreeOrion project encourages anybody to contribute to FreeOrion. For more
 details please see the [Contribution Guidelines](CONTRIBUTING.md).
 
 
-## License
+License
+-------
 
 The FreeOrion *source code* is licensed under the terms of [GPL v2],
 *game assets* are licensed under the terms of [CC-BY-SA-3.0] and *game content

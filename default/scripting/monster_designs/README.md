@@ -1,5 +1,5 @@
 ## Instructions for editing ship or monster designs in game in the Design window.
-1. Move or backup the `shipdesigns` directory in the freeorion data directory.  See the installation directory README.md##Directories for the data directory location.
+1. Move or backup the `shipdesigns` directory in the freeorion data directory.  See the installation directory README.rst##Directories for the data directory location.
 2. Replace the `shipdesigns` directory with the `default/scripting/ship_designs` or `default/scripting/monsters` directory.
 3. Start a new game.
 4. In the Design window, the saved ship designs will be the default ship designs or monsters.  Edit the ships.
