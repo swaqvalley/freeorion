@@ -129,6 +129,27 @@ Vorheriger
 LAST
 Letzter
 
+#PAUSE
+#Pause
+
+PAUSED
+Pausiert
+
+RESUME
+Fortsetzen
+
+DIFFICULTY
+Schwierigkeit
+
+#X
+#X Position
+
+#Y
+#Y Position
+
+INVALID_POSITION
+Unbekannte Position
+
 # Name for a newly created general purpose fleet.
 # %1% represents a unique number.
 NEW_FLEET_NAME
@@ -180,12 +201,12 @@ Kriegsflotte %1%
 #      If any other asteroids are in the system, the roman numeral is appended.
 # %1% name of the system this planet is created in.
 # %2% suffix for this planet
-# NEW_PLANET_NAME
-# %1% %2%
+#NEW_PLANET_NAME
+#%1% %2%
 
 # The label pre-pended to a new asteroids naming suffix
-# NEW_ASTEROIDS_SUFFIX
-# [[PT_ASTEROIDS]]
+#NEW_ASTEROIDS_SUFFIX
+#[[PT_ASTEROIDS]]
 
 EMPTY_SPACE
 Tiefe des Alls
@@ -235,6 +256,22 @@ Ohne Besitzer
 NOWHERE
 Kann nicht produziert werden
 
+# Prefix to use for menu items that will open a pedia entry
+POPUP_MENU_PEDIA_PREFIX
+'''Hilfe: '''
+
+GENERAL
+Allgemein
+
+#TEST
+#Test
+
+#BALANCE
+#Balance
+
+CONTENT
+Inhalt
+
 
 ##
 ## Major errors
@@ -244,6 +281,21 @@ ERROR_SOUND_INITIALIZATION_FAILED
 '''Initialisierung des OpenAL Audiosystems fehlgeschlagen.
 Überprüfen Sie die Fehlerprotokolle für die vollständige Fehlermeldung.
 '''
+
+# Used as a prefix for the FORMAT_LIST_[1-MANY]_ITEMS translation entries.
+FORMAT_LIST_DEFAULT_PLURAL_HEADER
+Es gibt:
+
+# Used as a prefix for the FORMAT_LIST_0_ITEMS translation entry.
+FORMAT_LIST_DEFAULT_SINGLE_HEADER
+Es gibt ein:
+
+FORMAT_LIST_DEFAULT_EMPTY_HEADER
+Es gibt keins.
+
+# Used as a prefix for the FORMAT_LIST_[0-MANY]_ITEMS translation entries.
+FORMAT_LIST_DEFAULT_DUAL_HEADER
+Es gibt:
 
 #FORMAT_LIST_0_ITEMS
 #%1%
@@ -287,40 +339,64 @@ FORMAT_LIST_10_ITEMS
 ##
 
 SD_CARRIER
-Prototyp Raumträger
+Begleitraumträger
 
 SD_CARRIER_DESC
-Prototypentwurf, welcher Jäger in den Kampf sendet, anstatt Geschütze zu nutzen.
+Raumträger, entworfen um andere bewaffnete Raumschiffe mit Abfangjägerngeschwadern zu verteidigen.
+
+SD_CARRIER_2
+Flottenraumträger
+
+SD_CARRIER_2_DESC
+Raumträger, entworfen um Angriffsflotten mit Bombergeschwadern und Massenkatapulten zu unterstützen.
 
 SD_SCOUT
 Kundschafter
 
 SD_SCOUT_DESC
-Kleines und billiges unbewaffnetes Schiff entworfen für Aufklärung und Erforschung. Weitere [[metertype METER_RESEARCH]], welche die [[metertype METER_DETECTION]] verbessert, würde bessere Entwürfe ermöglichen. Dieses Schiff kann nur auf Kolonien mit einem [[buildingtype BLD_SHIPYARD_BASE]] gebaut werden.
+Kleines und billiges unbewaffnetes Schiff entworfen für Aufklärung und Erforschung. [[SHIPDESIGN_DETECTION_RESEARCH_TIPS]] [[BLD_SHIPYARD_BASE_REQUIRED]]
 
 SD_SCOUT_2
 Radarkundschafter
 
+SD_SCOUT_2_DESC
+Kleines und billiges unbewaffnetes Schiff mit verbesserter [[metertype METER_DETECTION]], entworfen für Aufklärung und Erforschung. [[BLD_SHIPYARD_BASE_REQUIRED]]
+
 SD_SCOUT_3
 Scannerkundschafter
+
+SD_SCOUT_3_DESC
+Kleines und billiges unbewaffnetes Schiff mit verbesserter [[metertype METER_DETECTION]], entworfen für Aufklärung und Erforschung. [[BLD_SHIPYARD_BASE_REQUIRED]]
 
 SD_SCOUT_4
 Sensorkundschafter
 
+SD_SCOUT_4_DESC
+Kleines und billiges unbewaffnetes Schiff mit verbesserter [[metertype METER_DETECTION]], entworfen für Aufklärung und Erforschung. [[BLD_SHIPYARD_BASE_REQUIRED]]
+
 SD_ENG_SCOUT
 Energiekundschafter
 
+SD_ENG_SCOUT_DESC
+Kleines und schnelles unbewaffnetes Schiff entworfen für Aufklärung und Erforschung. [[SHIPDESIGN_DETECTION_RESEARCH_TIPS]] [[BLD_SHIPYARD_BASE_ENRG_COMP_THREE_STARS_REQUIRED]]
+
 SD_SMALL_MARK_1
-Korvette (M)
+Korvette M
+
+SD_SMALL_MARK1_DESC
+Kleines und günstiges mit Massenkatapulten bewaffnetes Schiff. [[BLD_SHIPYARD_BASE_REQUIRED]]
 
 SD_MARK_1
 Fregatte (M1)
 
 SD_MARK1_DESC
-Einfache Fregatte mit Massenkatapult. Kann nur auf Kolonien mit einem [[buildingtype BLD_SHIPYARD_BASE]] gebaut werden.
+Einfache Fregatte mit Massenkatapult. [[BLD_SHIPYARD_BASE_REQUIRED]]
 
 SD_LARGE_MARK_1
 Kreuzer (M)
+
+SD_LARGE_MARK1_DESC
+Kreuzer
 
 SD_LARGE_MARK_2
 Kreuzer (L)
@@ -6073,8 +6149,18 @@ Trägt eine Brigade Boden[[metertype METER_TROOPS]], samt Ausrüstung, die auf e
 
 
 ##
-## Ship hulls
+## Ship design/hull macros
 ##
+
+# Keys used in Predefined Ship Designs and Ship Hulls sections
+
+BLD_SHIPYARD_BASE_REQUIRED
+Dieses Schiff kann nur auf Kolonien mit einem [[buildingtype BLD_SHIPYARD_BASE]] gebaut werden.
+
+# Other than Requirements
+
+SHIPDESIGN_DETECTION_RESEARCH_TIPS
+Weitere [[metertype METER_RESEARCH]], welche die [[metertype METER_DETECTION]] verbessert, würde bessere Entwürfe ermöglichen.
 
 SH_ROBOTIC
 Robotische Hülle
