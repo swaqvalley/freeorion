@@ -730,14 +730,14 @@ if(UNIX AND NOT APPLE)
     if(NOT BUILD_HEADLESS)
         install(
             FILES
-            ${CMAKE_SOURCE_DIR}/freeorion.desktop
+            ${CMAKE_SOURCE_DIR}/org.freeorion.desktop
             DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications
         )
     endif()
 
     install(
         FILES
-        ${CMAKE_SOURCE_DIR}/freeorion.appdata.xml
+        ${CMAKE_SOURCE_DIR}/org.freeorion.appdata.xml
         DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/metainfo
     )
 
