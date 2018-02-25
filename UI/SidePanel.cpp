@@ -2452,7 +2452,7 @@ void SidePanel::PlanetPanelContainer::MouseWheel(const GG::Pt& pt, int move, GG:
         else
             m_vscroll->ScrollLineDecr();
         if (initial_pos != m_vscroll->PosnRange())
-            GG::SignalScroll(*m_vscroll, true);
+            GG::SignalScroll(*m_vscroll);
     }
 }
 
@@ -2471,7 +2471,7 @@ void SidePanel::PlanetPanelContainer::ScrollTo(int pos) {
         auto initial_pos = m_vscroll->PosnRange();
         m_vscroll->ScrollTo(pos);
         if (initial_pos != m_vscroll->PosnRange())
-            GG::SignalScroll(*m_vscroll, true);
+            GG::SignalScroll(*m_vscroll);
     }
 }
 

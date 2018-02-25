@@ -69,12 +69,6 @@ public:
         of the tab and the upper and lower bounds of the scroll's range are
         indicated, respectively */
     typedef boost::signals2::signal<void (int, int, int, int)> ScrolledSignalType;
-    /** emitted when the scrollbar's tab is stopped after being dragged, the
-        scrollbar is adjusted using the keyboard, or the scrollbar is moved
-        programmatically; the upper and lower extents of the tab and the
-        upper and lower bounds of the scroll's range are indicated,
-        respectively */
-    typedef boost::signals2::signal<void (int, int, int, int)> ScrolledAndStoppedSignalType;
     //@}
 
     /** \name Structors */ ///@{
@@ -95,7 +89,6 @@ public:
     Orientation          ScrollOrientation() const; ///< returns the orientation of the Scroll
 
     mutable ScrolledSignalType           ScrolledSignal;           ///< the scrolled signal object for this Scroll
-    mutable ScrolledAndStoppedSignalType ScrolledAndStoppedSignal; ///< the scrolled-and-stopped signal object for this Scroll
     //@}
 
     /** \name Mutators */ ///@{
@@ -167,9 +160,8 @@ private:
 };
 
 /** A convenience function that signals \a scroll's position, via
-    Scroll::ScrolledSignal.  If \a stopped is true, the position is
-    additionally signalled on Scroll::ScrolledAndStoppedSignal. */
-GG_API void SignalScroll(const Scroll& scroll, bool stopped);
+    Scroll::ScrolledSignal. */
+GG_API void SignalScroll(const Scroll& scroll);
 
 } // namespace GG
 

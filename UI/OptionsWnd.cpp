@@ -1023,7 +1023,7 @@ void OptionsWnd::VolumeOption(GG::ListBox* page, int indentation_level, const st
     slider->SetBrowseText(UserString(GetOptionsDB().GetDescription(volume_option_name)));
     button->CheckedSignal.connect(
         boost::bind(&OptionsWnd::SoundOptionsFeedback::SoundEffectsEnableClicked, &fb, _1));
-    slider->SlidAndStoppedSignal.connect(
+    slider->SlidSignal.connect(
         boost::bind(&OptionsWnd::SoundOptionsFeedback::UISoundsVolumeSlid, &fb, _1, _2, _3));
     fb.SetEffectsButton(std::move(button));
 }

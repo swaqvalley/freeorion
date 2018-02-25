@@ -890,7 +890,7 @@ void DropDownList::LButtonDown(const Pt& pt, Flags<ModKey> mod_keys)
     if (!LB_sels.empty()) {
         if (LB()->m_vscroll) {
             LB()->m_vscroll->ScrollTo(0);
-            SignalScroll(*LB()->m_vscroll, true);
+            SignalScroll(*LB()->m_vscroll);
         }
     }
     LB()->m_first_col_shown = 0;

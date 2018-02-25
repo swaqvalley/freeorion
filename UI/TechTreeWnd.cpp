@@ -1213,8 +1213,8 @@ void TechTreeWnd::LayoutPanel::Clear() {
     m_hscroll->ScrollTo(0);
     m_vscroll->SizeScroll(0, 1, 1, 1);
     m_hscroll->SizeScroll(0, 1, 1, 1);
-    GG::SignalScroll(*m_vscroll, true);
-    GG::SignalScroll(*m_hscroll, true);
+    GG::SignalScroll(*m_vscroll);
+    GG::SignalScroll(*m_hscroll);
 
     // delete all panels
     for (const auto& tech_panel: m_techs)
@@ -1301,9 +1301,9 @@ void TechTreeWnd::LayoutPanel::CenterOnTech(const std::string& tech_name) {
     auto& tech_panel = it->second;
     GG::Pt center_point = tech_panel->UpperLeft();
     m_hscroll->ScrollTo(Value(center_point.x));
-    GG::SignalScroll(*m_hscroll, true);
+    GG::SignalScroll(*m_hscroll);
     m_vscroll->ScrollTo(Value(center_point.y));
-    GG::SignalScroll(*m_vscroll, true);
+    GG::SignalScroll(*m_vscroll);
 }
 
 void TechTreeWnd::LayoutPanel::DoZoom(const GG::Pt& pt) const {
@@ -1440,8 +1440,8 @@ void TechTreeWnd::LayoutPanel::Layout(bool keep_position) {
         double vscroll_page_size_ratio = m_vscroll->PageSize() / initial_vscroll_page_size;
         m_hscroll->ScrollTo(static_cast<int>(initial_hscroll_pos * hscroll_page_size_ratio));
         m_vscroll->ScrollTo(static_cast<int>(initial_vscroll_pos * vscroll_page_size_ratio));
-        GG::SignalScroll(*m_hscroll, true);
-        GG::SignalScroll(*m_vscroll, true);
+        GG::SignalScroll(*m_hscroll);
+        GG::SignalScroll(*m_vscroll);
     } else {
         m_selected_tech_name.clear();
         // find a tech to centre view on

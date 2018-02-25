@@ -1601,7 +1601,7 @@ void ListBox::KeyPress(Key key, std::uint32_t key_code_point, Flags<ModKey> mod_
             auto first_shown_cell = *std::next(first_row_first_child, m_first_col_shown);
             GG::X new_scroll_offset(first_shown_cell->UpperLeft().x - UpperLeft().x - GG::X(BORDER_THICK));
             m_hscroll->ScrollTo(Value(new_scroll_offset));
-            SignalScroll(*m_hscroll, true);
+            SignalScroll(*m_hscroll);
             break;}
         case GGK_RIGHT:{ // right key (not numpad)
             std::size_t num_cols((*m_first_row_shown)->GetLayout()->Children().size());
@@ -1615,7 +1615,7 @@ void ListBox::KeyPress(Key key, std::uint32_t key_code_point, Flags<ModKey> mod_
             auto first_shown_cell = *std::next(first_row_first_child, m_first_col_shown);
             GG::X new_scroll_offset(first_shown_cell->UpperLeft().x - UpperLeft().x - GG::X(BORDER_THICK));
             m_hscroll->ScrollTo(Value(new_scroll_offset));
-            SignalScroll(*m_hscroll, true);
+            SignalScroll(*m_hscroll);
             break;}
 
         // any other key gets passed along to the parent
@@ -1638,7 +1638,7 @@ void ListBox::MouseWheel(const Pt& pt, int move, Flags<ModKey> mod_keys)
     if (Disabled() || !m_vscroll)
         return;
     m_vscroll->ScrollLineIncr(-move);
-    SignalScroll(*m_vscroll, true);
+    SignalScroll(*m_vscroll);
 }
 
 void ListBox::DragDropEnter(const Pt& pt, std::map<const Wnd*, bool>& drop_wnds_acceptable, Flags<ModKey> mod_keys)
@@ -1694,7 +1694,7 @@ void ListBox::TimerFiring(unsigned int ticks, Timer* timer)
                 m_first_row_shown != m_rows.begin()) {
                 m_vscroll->ScrollTo(m_vscroll->PosnRange().first -
                                     Value((*std::prev(m_first_row_shown))->Height()));
-                SignalScroll(*m_vscroll, true);
+                SignalScroll(*m_vscroll);
             }
             if (m_auto_scrolling_down) {
                 iterator last_visible_row = LastVisibleRow();
@@ -1704,7 +1704,7 @@ void ListBox::TimerFiring(unsigned int ticks, Timer* timer)
                 {
                     m_vscroll->ScrollTo(m_vscroll->PosnRange().first +
                                         Value((*m_first_row_shown)->Height()));
-                    SignalScroll(*m_vscroll, true);
+                    SignalScroll(*m_vscroll);
                 }
             }
         }
@@ -1712,7 +1712,7 @@ void ListBox::TimerFiring(unsigned int ticks, Timer* timer)
             if (m_auto_scrolling_left && 0 < m_first_col_shown) {
                 m_hscroll->ScrollTo(m_hscroll->PosnRange().first -
                                     Value(m_col_widths[m_first_col_shown - 1]));
-                SignalScroll(*m_hscroll, true);
+                SignalScroll(*m_hscroll);
             }
             if (m_auto_scrolling_right) {
                 std::size_t last_visible_col = LastVisibleCol();
@@ -1720,7 +1720,7 @@ void ListBox::TimerFiring(unsigned int ticks, Timer* timer)
                     ClientLowerRight().x < m_rows.front()->Right()) {
                     m_hscroll->ScrollTo(m_hscroll->PosnRange().first +
                                         Value(m_col_widths[m_first_col_shown]));
-                    SignalScroll(*m_hscroll, true);
+                    SignalScroll(*m_hscroll);
                 }
             }
         }
@@ -2204,7 +2204,7 @@ std::pair<bool, bool> ListBox::AddOrRemoveScrolls(
 
         //Scroll back to zero
         m_vscroll->ScrollTo(0);
-        SignalScroll(*m_vscroll, true);
+        SignalScroll(*m_vscroll);
 
         DetachChildAndReset(m_vscroll);
     }
@@ -2240,7 +2240,7 @@ std::pair<bool, bool> ListBox::AddOrRemoveScrolls(
         for (iterator it2 = m_rows.begin(); it2 != m_first_row_shown; ++it2)
             acc += (*it2)->Height();
         m_vscroll->ScrollTo(Value(acc));
-        SignalScroll(*m_vscroll, true);
+        SignalScroll(*m_vscroll);
     }
 
     bool hscroll_added_or_removed = false;
@@ -2251,7 +2251,7 @@ std::pair<bool, bool> ListBox::AddOrRemoveScrolls(
 
         //Scroll back to zero
         m_hscroll->ScrollTo(0);
-        SignalScroll(*m_hscroll, true);
+        SignalScroll(*m_hscroll);
 
         DetachChild(m_hscroll.get());
         m_hscroll = nullptr;

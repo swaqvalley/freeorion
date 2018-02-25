@@ -97,7 +97,6 @@ void Scroll::CompleteConstruction()
 
     if (INSTRUMENT_ALL_SIGNALS) {
         ScrolledSignal.connect(ScrolledEcho("Scroll::ScrolledSignal"));
-        ScrolledAndStoppedSignal.connect(ScrolledEcho("Scroll::ScrolledAndStoppedSignal"));
     }
 
     DoLayout();
@@ -336,7 +335,6 @@ void Scroll::LButtonDown(const Pt& pt, Flags<ModKey> mod_keys)
                 ScrollPageDecr();
                 if (old_posn != m_posn) {
                     ScrolledSignal(m_posn, m_posn + m_page_sz, m_range_min, m_range_max);
-                    ScrolledAndStoppedSignal(m_posn, m_posn + m_page_sz, m_range_min, m_range_max);
                 }
                 break;
             }
@@ -345,7 +343,6 @@ void Scroll::LButtonDown(const Pt& pt, Flags<ModKey> mod_keys)
                 ScrollPageIncr();
                 if (old_posn != m_posn) {
                     ScrolledSignal(m_posn, m_posn + m_page_sz, m_range_min, m_range_max);
-                    ScrolledAndStoppedSignal(m_posn, m_posn + m_page_sz, m_range_min, m_range_max);
                 }
                 break;
             }
@@ -402,7 +399,7 @@ bool Scroll::EventFilter(Wnd* w, const WndEvent& event)
         case WndEvent::LButtonUp:
         case WndEvent::LClick:
             if (m_tab_dragged)
-                ScrolledAndStoppedSignal(m_posn, m_posn + m_page_sz, m_range_min, m_range_max);
+                ScrolledSignal(m_posn, m_posn + m_page_sz, m_range_min, m_range_max);
             m_dragging_tab = false;
             m_tab_dragged = false;
             break;
@@ -470,7 +467,6 @@ void Scroll::ScrollLineIncrDecrImpl(bool signal, int lines)
     MoveTabToPosn();
     if (signal && old_posn != m_posn) {
         ScrolledSignal(m_posn, m_posn + m_page_sz, m_range_min, m_range_max);
-        ScrolledAndStoppedSignal(m_posn, m_posn + m_page_sz, m_range_min, m_range_max);
     }
 }
 
@@ -478,11 +474,9 @@ void Scroll::ScrollLineIncrDecrImpl(bool signal, int lines)
 ////////////////////////////////////////////////
 // free functions
 ////////////////////////////////////////////////
-void GG::SignalScroll(const Scroll& scroll, bool stopped)
+void GG::SignalScroll(const Scroll& scroll)
 {
     std::pair<int, int> pr = scroll.PosnRange();
     std::pair<int, int> sr = scroll.ScrollRange();
     scroll.ScrolledSignal(pr.first, pr.second, sr.first, sr.second);
-    if (stopped)
-        scroll.ScrolledAndStoppedSignal(pr.first, pr.second, sr.first, sr.second);
 }

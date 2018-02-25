@@ -254,8 +254,8 @@ namespace {
 
             if (GG::ScrollPanel const * scroll_panel = FindParentOfType<GG::ScrollPanel>(&parent)) {
                 GG::Scroll const* scroll = scroll_panel->GetScroll();
-                m_signals.push_back(scroll->ScrolledAndStoppedSignal.connect(
-                    boost::bind(&LazyScrollerLinkText::HandleScrolledAndStopped, this, _1, _2, _3, _4)));
+                m_signals.push_back(scroll->ScrolledSignal.connect(
+                    boost::bind(&LazyScrollerLinkText::HandleScrolled, this, _1, _2, _3, _4)));
 
             }
 
@@ -294,7 +294,7 @@ namespace {
             }
         }
 
-        void HandleScrolledAndStopped(int start_pos, int end_post, int min_pos, int max_pos)
+        void HandleScrolled(int start_pos, int end_post, int min_pos, int max_pos)
         { HandleMaybeVisible(); }
 
         void SizeMove(const GG::Pt& ul, const GG::Pt& lr)  override {

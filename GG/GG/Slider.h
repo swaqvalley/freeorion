@@ -61,11 +61,6 @@ public:
     /**emitted whenever the slider is moved; the tab position and the upper
        and lower bounds of the slider's range are indicated, respectively */
     typedef boost::signals2::signal<void (T, T, T)> SlidSignalType;
-    /** emitted when the slider's tab is stopped after being dragged, the
-        slider is adjusted using the keyboard, or the slider is moved
-        programmatically; the tab position and the upper and lower bounds
-        of the slider's range are indicated, respectively */
-    typedef boost::signals2::signal<void (T, T, T)> SlidAndStoppedSignalType;
     //@}
 
     /** \name Structors */ ///@{
@@ -90,7 +85,6 @@ public:
     unsigned int         LineWidth() const;      ///< returns the width of the line along which the tab slides, in pixels
 
     mutable SlidSignalType           SlidSignal;           ///< returns the slid signal object for this Slider
-    mutable SlidAndStoppedSignalType SlidAndStoppedSignal; ///< returns the slid-and-stopped signal object for this Slider
     //@}
 
     /** \name Mutators */ ///@{
@@ -184,7 +178,6 @@ void Slider<T>::CompleteConstruction()
 
     if (INSTRUMENT_ALL_SIGNALS) {
         SlidSignal.connect(SlidEcho("Slider<T>::SlidSignal"));
-        SlidAndStoppedSignal.connect(SlidEcho("Slider<T>::SlidAndStoppedSignal"));
     }
 }
 
@@ -395,7 +388,7 @@ bool Slider<T>::EventFilter(Wnd* w, const WndEvent& event)
         case WndEvent::LButtonUp:
         case WndEvent::LClick: {
             if (!Disabled())
-                SlidAndStoppedSignal(m_posn, m_range_min, m_range_max);
+                SlidSignal(m_posn, m_range_min, m_range_max);
             m_dragging_tab = false;
             break;
         }
@@ -448,7 +441,6 @@ void Slider<T>::SlideToImpl(T p, bool signal)
     MoveTabToPosn();
     if (signal && m_posn != old_posn) {
         SlidSignal(m_posn, m_range_min, m_range_max);
-        SlidAndStoppedSignal(m_posn, m_range_min, m_range_max);
     }
 }
 

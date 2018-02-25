@@ -104,7 +104,7 @@ namespace GG {
     void ScrollPanel::ScrollTo(Y pos)
     {
         m_vscroll->ScrollTo(Value(pos));
-        SignalScroll(*m_vscroll, true);
+        SignalScroll(*m_vscroll);
     }
 
     void ScrollPanel::SetBackgroundColor(const Clr& color)
@@ -115,7 +115,7 @@ namespace GG {
     void ScrollPanel::MouseWheel(const Pt& pt, int move, Flags<ModKey> mod_keys)
     {
         m_vscroll->ScrollLineIncr(-move);
-        SignalScroll(*m_vscroll, true);
+        SignalScroll(*m_vscroll);
     }
 
     void ScrollPanel::KeyPress(Key key, std::uint32_t key_code_point, Flags<ModKey> mod_keys)
@@ -145,20 +145,20 @@ namespace GG {
         switch (key) {
         case GGK_UP: {
             m_vscroll->ScrollLineIncr(-1);
-            SignalScroll(*m_vscroll, true);
+            SignalScroll(*m_vscroll);
             break;
         }
 
         case GGK_DOWN: {
             m_vscroll->ScrollLineIncr(1);
-            SignalScroll(*m_vscroll, true);
+            SignalScroll(*m_vscroll);
             break;
         }
 
         case GGK_HOME: {
             if (ctrl_down) {
                 m_vscroll->ScrollTo(m_vscroll->ScrollRange().first);
-                SignalScroll(*m_vscroll, true);
+                SignalScroll(*m_vscroll);
             }
             break;
         }
@@ -166,20 +166,20 @@ namespace GG {
         case GGK_END: {
             if (ctrl_down) {
                 m_vscroll->ScrollTo(m_vscroll->ScrollRange().second);
-                SignalScroll(*m_vscroll, true);
+                SignalScroll(*m_vscroll);
             }
             break;
         }
 
         case GGK_PAGEUP: {
             m_vscroll->ScrollPageDecr();
-            SignalScroll(*m_vscroll, true);
+            SignalScroll(*m_vscroll);
             break;
         }
 
         case GGK_PAGEDOWN: {
             m_vscroll->ScrollPageIncr();
-            SignalScroll(*m_vscroll, true);
+            SignalScroll(*m_vscroll);
             break;
         }
 
