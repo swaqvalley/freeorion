@@ -18,12 +18,12 @@
 
 
 find_program(SPHINX_BUILD_EXECUTABLE
-    NAMES sphinx-build
+    NAMES sphinx-build-2 sphinx-build
     DOC "Sphinx documentation generator tool"
 )
 
 find_program(SPHINX_APIDOC_EXECUTABLE
-    NAMES sphinx-apidoc
+    NAMES sphinx-apidoc-2 sphinx-apidoc
     DOC "Sphinx API doc generator tool"
 )
 
