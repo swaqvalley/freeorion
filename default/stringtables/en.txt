@@ -4651,6 +4651,9 @@ Economic
 SOCIAL_CATEGORY
 Social
 
+MILITARY_CATEGORY
+Military
+
 
 ##
 ## Statistics
