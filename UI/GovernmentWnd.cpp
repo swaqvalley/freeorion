@@ -167,6 +167,32 @@ namespace {
     }
 }
 
+//namespace {
+//    /** A popup tooltop for display when mousing over government policies.*/
+//    class PolicyBrowseWnd : public GG::BrowseInfoWnd {
+//    public:
+//        PolicyBrowseWnd(const std::string& policy_name, int empire_id) :
+//            BrowseInfoWnd(
+//
+//        void CompleteConstruction() override;
+//        bool WndHasBrowseInfo(const Wnd* wnd, std::size_t mode) const override;
+//        void Render() override;
+//
+//    private:
+//        virtual void  InitBuffer();
+//
+//        GG::GL2DVertexBuffer            m_buffer;
+//        std::shared_ptr<GG::Label>      m_title_text = nullptr;
+//        std::shared_ptr<GG::Label>      m_species_text = nullptr;
+//        std::shared_ptr<GG::ListBox>    m_list = nullptr;
+//        std::shared_ptr<GG::Label>      m_tags_text = nullptr;
+//        std::shared_ptr<GG::ListBox>    m_tags_list = nullptr;
+//        GG::Pt                          m_offset;
+//        std::string                     m_policy_name;
+//        int                             m_empire_id = ALL_EMPIRES;
+//    };
+//}
+
 //////////////////////////////////////////////////
 // PolicyControl                                //
 //////////////////////////////////////////////////
