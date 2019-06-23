@@ -59,7 +59,6 @@ private:
     void Initialize();
     void UpdateSummary();
     void UpdateEffectLabelsAndValues(GG::Y& top);
-
 };
 
 class ShipFightersBrowseWnd : public MeterBrowseWnd {
