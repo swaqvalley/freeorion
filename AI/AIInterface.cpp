@@ -13,6 +13,7 @@
 #include "../universe/Tech.h"
 #include "../universe/Enums.h"
 #include "../Empire/Empire.h"
+#include "../Empire/Government.h"
 
 #include "../util/Directories.h"
 #include "../util/Logger.h"
@@ -253,9 +254,45 @@ namespace AIInterface {
         return 1;
     }
 
+    int IssueAdoptPolicyOrder(const std::string& policy_name, const std::string& category,
+                              int slot)
+    {
+        const Policy* policy = GetPolicy(policy_name);
+        if (!policy) {
+            ErrorLogger() << "IssueAdoptPolicyOrder : passed policy_name, " << policy_name << ", that is not the name of a policy.";
+            return 0;
+        }
+        if (!policy->Category().empty() && policy->Category() != category) {
+            ErrorLogger() << "IssueAdoptPolicyOrder : passed policy_name, " << policy_name
+                          << ",  and category, " << category << ",  name that are inconsistent";
+            return 0;
+        }
+
+        int empire_id = AIClientApp::GetApp()->EmpireID();
+        Empire* empire = AIClientApp::GetApp()->GetEmpire(empire_id);
+        if (!empire) {
+            ErrorLogger() << "IssueAdoptPolicyOrder : couldn't get empire with id " << empire_id;
+            return 0;
+        }
+        if (empire->PolicyAdopted(policy_name)) {
+            ErrorLogger() << "IssueAdoptPolicyOrder : policy with name " << policy_name << " was already adopted";
+            return 0;
+        }
+
+        AIClientApp::GetApp()->Orders().IssueOrder(
+            std::make_shared<PolicyOrder>(empire_id, policy_name, category, true, slot));
+        return 1;
+    }
+
+
+
     int IssueEnqueueBuildingProductionOrder(const std::string& item_name, int location_id) {
         int empire_id = AIClientApp::GetApp()->EmpireID();
         Empire* empire = AIClientApp::GetApp()->GetEmpire(empire_id);
+        if (!empire) {
+            ErrorLogger() << "IssueEnqueueBuildingProductionOrder : couldn't get empire with id " << empire_id;
+            return 0;
+        }
 
         if (!empire->ProducibleItem(BT_BUILDING, item_name, location_id)) {
             ErrorLogger() << "IssueEnqueueBuildingProductionOrder : specified item_name and location_id that don't indicate an item that can be built at that location";
@@ -276,6 +313,10 @@ namespace AIInterface {
     int IssueEnqueueShipProductionOrder(int design_id, int location_id) {
         int empire_id = AIClientApp::GetApp()->EmpireID();
         Empire* empire = AIClientApp::GetApp()->GetEmpire(empire_id);
+        if (!empire) {
+            ErrorLogger() << "IssueEnqueueShipProductionOrder : couldn't get empire with id " << empire_id;
+            return 0;
+        }
 
         if (!empire->ProducibleItem(BT_SHIP, design_id, location_id)) {
             ErrorLogger() << "IssueEnqueueShipProductionOrder : specified design_id and location_id that don't indicate a design that can be built at that location";
@@ -291,6 +332,10 @@ namespace AIInterface {
     int IssueChangeProductionQuantityOrder(int queue_index, int new_quantity, int new_blocksize) {
         int empire_id = AIClientApp::GetApp()->EmpireID();
         Empire* empire = AIClientApp::GetApp()->GetEmpire(empire_id);
+        if (!empire) {
+            ErrorLogger() << "IssueChangeProductionQuantityOrder : couldn't get empire with id " << empire_id;
+            return 0;
+        }
 
         const ProductionQueue& queue = empire->GetProductionQueue();
         if (queue_index < 0 || static_cast<int>(queue.size()) <= queue_index) {
@@ -316,6 +361,10 @@ namespace AIInterface {
 
         int empire_id = AIClientApp::GetApp()->EmpireID();
         Empire* empire = AIClientApp::GetApp()->GetEmpire(empire_id);
+        if (!empire) {
+            ErrorLogger() << "IssueRequeueProductionOrder : couldn't get empire with id " << empire_id;
+            return 0;
+        }
 
         const ProductionQueue& queue = empire->GetProductionQueue();
         if (old_queue_index < 0 || static_cast<int>(queue.size()) <= old_queue_index) {
@@ -344,6 +393,10 @@ namespace AIInterface {
     int IssueDequeueProductionOrder(int queue_index) {
         int empire_id = AIClientApp::GetApp()->EmpireID();
         Empire* empire = AIClientApp::GetApp()->GetEmpire(empire_id);
+        if (!empire) {
+            ErrorLogger() << "IssueDequeueProductionOrder : couldn't get empire with id " << empire_id;
+            return 0;
+        }
 
         const ProductionQueue& queue = empire->GetProductionQueue();
         if (queue_index < 0 || static_cast<int>(queue.size()) <= queue_index) {
@@ -360,6 +413,10 @@ namespace AIInterface {
     int IssuePauseProductionOrder(int queue_index, bool pause) {
         int empire_id = AIClientApp::GetApp()->EmpireID();
         Empire* empire = AIClientApp::GetApp()->GetEmpire(empire_id);
+        if (!empire) {
+            ErrorLogger() << "IssuePauseProductionOrder : couldn't get empire with id " << empire_id;
+            return 0;
+        }
 
         const ProductionQueue& queue = empire->GetProductionQueue();
         if (queue_index < 0 || static_cast<int>(queue.size()) <= queue_index) {
@@ -376,6 +433,10 @@ namespace AIInterface {
     int IssueAllowStockpileProductionOrder(int queue_index, bool use_stockpile) {
         int empire_id = AIClientApp::GetApp()->EmpireID();
         Empire* empire = AIClientApp::GetApp()->GetEmpire(empire_id);
+        if (!empire) {
+            ErrorLogger() << "IssueAllowStockpileProductionOrder : couldn't get empire with id " << empire_id;
+            return 0;
+        }
 
         const ProductionQueue& queue = empire->GetProductionQueue();
         if (queue_index < 0 || static_cast<int>(queue.size()) <= queue_index) {
