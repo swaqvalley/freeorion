@@ -284,7 +284,23 @@ namespace AIInterface {
         return 1;
     }
 
+    int IssueDeadoptPolicyOrder(const std::string& policy_name) {
+        int empire_id = AIClientApp::GetApp()->EmpireID();
+        Empire* empire = AIClientApp::GetApp()->GetEmpire(empire_id);
+        if (!empire) {
+            ErrorLogger() << "IssueDeadoptPolicyOrder : couldn't get empire with id " << empire_id;
+            return 0;
+        }
+        if (!empire->PolicyAdopted(policy_name)) {
+            ErrorLogger() << "IssueDeadoptPolicyOrder : policy with name " << policy_name << " was not yet adopted, so can't be un-adopted";
+            return 0;
+        }
 
+        AIClientApp::GetApp()->Orders().IssueOrder(
+            std::make_shared<PolicyOrder>(empire_id, policy_name, "", false));  // category and slot ignored for de-adtopting
+        return 1;
+
+    }
 
     int IssueEnqueueBuildingProductionOrder(const std::string& item_name, int location_id) {
         int empire_id = AIClientApp::GetApp()->EmpireID();

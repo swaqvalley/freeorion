@@ -255,6 +255,7 @@ namespace AIInterface {
     int IssueEnqueueTechOrder(const std::string& tech_name, int position);
     int IssueDequeueTechOrder(const std::string& tech_name);
     int IssueAdoptPolicyOrder(const std::string& policy_name, const std::string& category, int slot);
+    int IssueDeadoptPolicyOrder(const std::string& policy_name);
     int IssueEnqueueBuildingProductionOrder(const std::string& item_name, int location_id);
     int IssueEnqueueShipProductionOrder(int design_id, int location_id);
     int IssueChangeProductionQuantityOrder(int queue_index, int new_quantity, int new_blocksize);
