@@ -167,32 +167,37 @@ namespace {
     }
 }
 
-//namespace {
-//    /** A popup tooltop for display when mousing over government policies.*/
-//    class PolicyBrowseWnd : public GG::BrowseInfoWnd {
-//    public:
-//        PolicyBrowseWnd(const std::string& policy_name, int empire_id) :
-//            BrowseInfoWnd(
-//
-//        void CompleteConstruction() override;
-//        bool WndHasBrowseInfo(const Wnd* wnd, std::size_t mode) const override;
-//        void Render() override;
-//
-//    private:
-//        virtual void  InitBuffer();
-//
-//        GG::GL2DVertexBuffer            m_buffer;
-//        std::shared_ptr<GG::Label>      m_title_text = nullptr;
-//        std::shared_ptr<GG::Label>      m_species_text = nullptr;
-//        std::shared_ptr<GG::ListBox>    m_list = nullptr;
-//        std::shared_ptr<GG::Label>      m_tags_text = nullptr;
-//        std::shared_ptr<GG::ListBox>    m_tags_list = nullptr;
-//        GG::Pt                          m_offset;
-//        std::string                     m_policy_name;
-//        int                             m_empire_id = ALL_EMPIRES;
-//    };
-//}
+namespace {
+    //////////////////////////
+    //    PolicyBroseWnd    //
+    //////////////////////////
+    std::shared_ptr<GG::BrowseInfoWnd> PolicyBroseWnd(const std::string& policy_name) {
+        int empire_id = HumanClientApp::GetApp()->EmpireID();
+        const Empire* empire = GetEmpire(empire_id);
+        const Policy* policy = GetPolicy(policy_name);
+        if (!policy)
+            return nullptr;
 
+        std::string main_text;
+
+        main_text += UserString(policy->Category()) + " - ";
+        main_text += UserString(policy->ShortDescription()) + "\n\n";
+
+        if (empire) {
+            if (!empire->PolicyAvailable(policy_name)) {
+                main_text += UserString("POLICY_LOCKED") + "\n\n";
+            } else {
+                auto cost = policy->AdoptionCost(empire_id);
+                main_text += boost::io::str(FlexibleFormat(UserString("POLICY_ADOPTABLE_COST")) % cost)  + "\n\n";
+            }
+        }
+
+        main_text += UserString(policy->Description());
+
+        return GG::Wnd::Create<IconTextBrowseWnd>(
+            ClientUI::PolicyIcon(policy_name), UserString(policy_name), main_text);
+    }
+}
 //////////////////////////////////////////////////
 // PolicyControl                                //
 //////////////////////////////////////////////////
@@ -263,11 +268,7 @@ void PolicyControl::CompleteConstruction() {
 
     //DebugLogger() << "PolicyControl::PolicyControl policy name: " << m_policy->Name();
     SetBrowseModeTime(GetOptionsDB().Get<int>("ui.tooltip.delay"));
-    SetBrowseInfoWnd(GG::Wnd::Create<IconTextBrowseWnd>(
-        ClientUI::PolicyIcon(m_policy->Name()),
-        UserString(m_policy->Name()) + " (" + UserString(m_policy->Category()) + ")",
-        UserString(m_policy->Description())
-    ));
+    SetBrowseInfoWnd(PolicyBroseWnd(m_policy->Name()));
 }
 
 void PolicyControl::Render() {}
